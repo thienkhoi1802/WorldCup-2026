@@ -15,8 +15,8 @@ export const QUICK_ACCESS_ITEMS = [
   { label: AccessType.STADIUMS, icon: <MapPin className="w-4 h-4" /> },
 ];
 
-// DATA SOURCES
-const TITLES_AND_CATS = [
+// DATA SOURCES - Expanded for Layout
+const BASE_TITLES = [
     { t: "Vòng loại World Cup 2026 khu vực Châu Á: Việt Nam quyết đấu Indonesia", c: "Tiêu điểm" },
     { t: "FIFA chốt phương án 12 bảng đấu: Cuộc đua thể lực khốc liệt", c: "Tin nóng" },
     { t: "Chính thức: 16 sân vận động tại Bắc Mỹ đã sẵn sàng", c: "Hậu trường" },
@@ -34,17 +34,21 @@ const TITLES_AND_CATS = [
     { t: "Top 5 tài năng trẻ hứa hẹn bùng nổ", c: "Sao mai" }
 ];
 
-export const NEWS_DATA: NewsItem[] = TITLES_AND_CATS.map((item, index) => ({
-  id: (index + 1).toString(),
-  title: item.t,
-  excerpt: index === 0 
-    ? 'Trận đấu then chốt quyết định tấm vé đi tiếp vào vòng loại thứ 3. HLV và các cầu thủ đang chịu áp lực cực lớn từ người hâm mộ.'
-    : 'Cập nhật những thông tin mới nhất về hành trình đến Bắc Mỹ 2026.',
-  image: `https://picsum.photos/600/400?random=${index + 50}`,
-  time: `${Math.floor(Math.random() * 24) + 1} giờ trước`,
-  category: item.c,
-  isMain: index === 0,
-}));
+// Generate 50 items for pagination testing
+export const NEWS_DATA: NewsItem[] = Array.from({ length: 50 }).map((_, index) => {
+    const base = BASE_TITLES[index % BASE_TITLES.length];
+    return {
+        id: (index + 1).toString(),
+        title: index < 3 ? base.t : `${base.t} (Tin số #${index + 1})`,
+        excerpt: index === 0 
+            ? 'Trận đấu then chốt quyết định tấm vé đi tiếp vào vòng loại thứ 3. HLV và các cầu thủ đang chịu áp lực cực lớn từ người hâm mộ. Chiến thuật phòng ngự phản công sẽ là chìa khóa.'
+            : 'Cập nhật những thông tin mới nhất, phân tích chuyên sâu về hành trình đến Bắc Mỹ 2026 của các đội tuyển hàng đầu thế giới.',
+        image: `https://picsum.photos/600/400?random=${index + 50}`,
+        time: `${Math.floor(Math.random() * 24) + 1} giờ trước`,
+        category: base.c,
+        isMain: index === 0,
+    };
+});
 
 // Generic Shield Icon for multi-team slots or TBD matches
 const SHIELD_ICON = 'https://cdn-icons-png.flaticon.com/512/10602/10602939.png'; 
@@ -53,41 +57,61 @@ const SHIELD_ICON = 'https://cdn-icons-png.flaticon.com/512/10602/10602939.png';
 const FLAG_MAP: Record<string, string> = {
     'Mexico': 'https://flagcdn.com/w40/mx.png',
     'South Africa': 'https://flagcdn.com/w40/za.png',
+    'Nam Phi': 'https://flagcdn.com/w40/za.png', // Vietnamese mapping
     'Korea Republic': 'https://flagcdn.com/w40/kr.png',
+    'Hàn Quốc': 'https://flagcdn.com/w40/kr.png', // Vietnamese mapping
     'Canada': 'https://flagcdn.com/w40/ca.png',
     'USA': 'https://flagcdn.com/w40/us.png',
+    'Hoa Kỳ': 'https://flagcdn.com/w40/us.png',
     'Paraguay': 'https://flagcdn.com/w40/py.png',
     'Qatar': 'https://flagcdn.com/w40/qa.png',
     'Switzerland': 'https://flagcdn.com/w40/ch.png',
+    'Thụy Sĩ': 'https://flagcdn.com/w40/ch.png', // Vietnamese mapping
     'Brazil': 'https://flagcdn.com/w40/br.png',
     'Morocco': 'https://flagcdn.com/w40/ma.png',
+    'Ma-rốc': 'https://flagcdn.com/w40/ma.png', // Vietnamese mapping
     'Haiti': 'https://flagcdn.com/w40/ht.png',
     'Scotland': 'https://flagcdn.com/w40/gb-sct.png',
     'Australia': 'https://flagcdn.com/w40/au.png',
+    'Úc': 'https://flagcdn.com/w40/au.png',
     'Germany': 'https://flagcdn.com/w40/de.png',
+    'Đức': 'https://flagcdn.com/w40/de.png', // Vietnamese mapping
     'Curaçao': 'https://flagcdn.com/w40/cw.png',
     'Netherlands': 'https://flagcdn.com/w40/nl.png',
+    'Hà Lan': 'https://flagcdn.com/w40/nl.png', // Vietnamese mapping
     'Japan': 'https://flagcdn.com/w40/jp.png',
+    'Nhật Bản': 'https://flagcdn.com/w40/jp.png', // Vietnamese mapping
     "Côte d'Ivoire": 'https://flagcdn.com/w40/ci.png',
+    'Bờ Biển Ngà': 'https://flagcdn.com/w40/ci.png', // Vietnamese mapping
     'Ecuador': 'https://flagcdn.com/w40/ec.png',
     'Tunisia': 'https://flagcdn.com/w40/tn.png',
     'Spain': 'https://flagcdn.com/w40/es.png',
+    'Tây Ban Nha': 'https://flagcdn.com/w40/es.png', // Vietnamese mapping
     'Cabo Verde': 'https://flagcdn.com/w40/cv.png',
     'Belgium': 'https://flagcdn.com/w40/be.png',
+    'Bỉ': 'https://flagcdn.com/w40/be.png', // Vietnamese mapping
     'Egypt': 'https://flagcdn.com/w40/eg.png',
+    'Ai Cập': 'https://flagcdn.com/w40/eg.png', // Vietnamese mapping
     'Saudi Arabia': 'https://flagcdn.com/w40/sa.png',
+    'Ả Rập Xê Út': 'https://flagcdn.com/w40/sa.png', // Vietnamese mapping
     'Uruguay': 'https://flagcdn.com/w40/uy.png',
     'IR Iran': 'https://flagcdn.com/w40/ir.png',
+    'Iran': 'https://flagcdn.com/w40/ir.png',
     'New Zealand': 'https://flagcdn.com/w40/nz.png',
     'France': 'https://flagcdn.com/w40/fr.png',
+    'Pháp': 'https://flagcdn.com/w40/fr.png', // Vietnamese mapping
     'Senegal': 'https://flagcdn.com/w40/sn.png',
     'Norway': 'https://flagcdn.com/w40/no.png',
+    'Na Uy': 'https://flagcdn.com/w40/no.png', // Vietnamese mapping
     'Argentina': 'https://flagcdn.com/w40/ar.png',
     'Algeria': 'https://flagcdn.com/w40/dz.png',
     'Austria': 'https://flagcdn.com/w40/at.png',
+    'Áo': 'https://flagcdn.com/w40/at.png', // Vietnamese mapping
     'Jordan': 'https://flagcdn.com/w40/jo.png',
     'Portugal': 'https://flagcdn.com/w40/pt.png',
+    'Bồ Đào Nha': 'https://flagcdn.com/w40/pt.png', // Vietnamese mapping
     'England': 'https://flagcdn.com/w40/gb-eng.png',
+    'Anh': 'https://flagcdn.com/w40/gb-eng.png', // Vietnamese mapping
     'Croatia': 'https://flagcdn.com/w40/hr.png',
     'Ghana': 'https://flagcdn.com/w40/gh.png',
     'Panama': 'https://flagcdn.com/w40/pa.png',
@@ -99,43 +123,43 @@ const getFlag = (teamName: string) => FLAG_MAP[teamName] || SHIELD_ICON;
 
 export const UPCOMING_MATCHES: Match[] = [
   // --- GROUP STAGE ---
-  { id: 'm1', date: '12/06', time: '02:00', homeTeam: 'Mexico', awayTeam: 'South Africa', homeFlag: getFlag('Mexico'), awayFlag: getFlag('South Africa'), round: 'Bảng A', stadium: 'Mexico City Stadium', status: 'upcoming' },
-  { id: 'm2', date: '12/06', time: '09:00', homeTeam: 'Korea Republic', awayTeam: 'DEN/MKD/CZE/IRL', homeFlag: getFlag('Korea Republic'), awayFlag: SHIELD_ICON, round: 'Bảng A', stadium: 'Guadalajara Stadium', status: 'upcoming' },
+  { id: 'm1', date: '12/06', time: '02:00', homeTeam: 'Mexico', awayTeam: 'Nam Phi', homeFlag: getFlag('Mexico'), awayFlag: getFlag('Nam Phi'), round: 'Bảng A', stadium: 'Mexico City Stadium', status: 'upcoming' },
+  { id: 'm2', date: '12/06', time: '09:00', homeTeam: 'Hàn Quốc', awayTeam: 'DEN/MKD/CZE/IRL', homeFlag: getFlag('Hàn Quốc'), awayFlag: SHIELD_ICON, round: 'Bảng A', stadium: 'Guadalajara Stadium', status: 'upcoming' },
   
   { id: 'm3', date: '13/06', time: '02:00', homeTeam: 'Canada', awayTeam: 'ITA/NIR/WAL/BIH', homeFlag: getFlag('Canada'), awayFlag: SHIELD_ICON, round: 'Bảng B', stadium: 'Toronto Stadium', status: 'upcoming' },
   { id: 'm4', date: '13/06', time: '08:00', homeTeam: 'USA', awayTeam: 'Paraguay', homeFlag: getFlag('USA'), awayFlag: getFlag('Paraguay'), round: 'Bảng D', stadium: 'Los Angeles Stadium', status: 'upcoming' },
 
-  { id: 'm5', date: '14/06', time: '02:00', homeTeam: 'Qatar', awayTeam: 'Switzerland', homeFlag: getFlag('Qatar'), awayFlag: getFlag('Switzerland'), round: 'Bảng B', stadium: 'San Francisco Bay Area', status: 'upcoming' },
+  { id: 'm5', date: '14/06', time: '02:00', homeTeam: 'Qatar', awayTeam: 'Thụy Sĩ', homeFlag: getFlag('Qatar'), awayFlag: getFlag('Thụy Sĩ'), round: 'Bảng B', stadium: 'San Francisco Bay Area', status: 'upcoming' },
   { id: 'm6', date: '14/06', time: '05:00', homeTeam: 'Brazil', awayTeam: 'Morocco', homeFlag: getFlag('Brazil'), awayFlag: getFlag('Morocco'), round: 'Bảng C', stadium: 'NY/NJ Stadium', status: 'upcoming' },
   { id: 'm7', date: '14/06', time: '08:00', homeTeam: 'Haiti', awayTeam: 'Scotland', homeFlag: getFlag('Haiti'), awayFlag: getFlag('Scotland'), round: 'Bảng C', stadium: 'Boston Stadium', status: 'upcoming' },
   { id: 'm8', date: '14/06', time: '11:00', homeTeam: 'Australia', awayTeam: 'TUR/ROU/SVK/KOS', homeFlag: getFlag('Australia'), awayFlag: SHIELD_ICON, round: 'Bảng D', stadium: 'BC Place Vancouver', status: 'upcoming' },
 
-  { id: 'm9', date: '15/06', time: '00:00', homeTeam: 'Germany', awayTeam: 'Curaçao', homeFlag: getFlag('Germany'), awayFlag: getFlag('Curaçao'), round: 'Bảng E', stadium: 'Houston Stadium', status: 'upcoming' },
-  { id: 'm10', date: '15/06', time: '03:00', homeTeam: 'Netherlands', awayTeam: 'Japan', homeFlag: getFlag('Netherlands'), awayFlag: getFlag('Japan'), round: 'Bảng F', stadium: 'Dallas Stadium', status: 'upcoming' },
-  { id: 'm11', date: '15/06', time: '06:00', homeTeam: "Côte d'Ivoire", awayTeam: 'Ecuador', homeFlag: getFlag("Côte d'Ivoire"), awayFlag: getFlag('Ecuador'), round: 'Bảng E', stadium: 'Philadelphia Stadium', status: 'upcoming' },
+  { id: 'm9', date: '15/06', time: '00:00', homeTeam: 'Đức', awayTeam: 'Curaçao', homeFlag: getFlag('Đức'), awayFlag: getFlag('Curaçao'), round: 'Bảng E', stadium: 'Houston Stadium', status: 'upcoming' },
+  { id: 'm10', date: '15/06', time: '03:00', homeTeam: 'Hà Lan', awayTeam: 'Nhật Bản', homeFlag: getFlag('Hà Lan'), awayFlag: getFlag('Nhật Bản'), round: 'Bảng F', stadium: 'Dallas Stadium', status: 'upcoming' },
+  { id: 'm11', date: '15/06', time: '06:00', homeTeam: "Bờ Biển Ngà", awayTeam: 'Ecuador', homeFlag: getFlag("Bờ Biển Ngà"), awayFlag: getFlag('Ecuador'), round: 'Bảng E', stadium: 'Philadelphia Stadium', status: 'upcoming' },
   { id: 'm12', date: '15/06', time: '09:00', homeTeam: 'UKR/SWE/POL/ALB', awayTeam: 'Tunisia', homeFlag: SHIELD_ICON, awayFlag: getFlag('Tunisia'), round: 'Bảng F', stadium: 'Monterrey Stadium', status: 'upcoming' },
-  { id: 'm13', date: '15/06', time: '23:00', homeTeam: 'Spain', awayTeam: 'Cabo Verde', homeFlag: getFlag('Spain'), awayFlag: getFlag('Cabo Verde'), round: 'Bảng H', stadium: 'Atlanta Stadium', status: 'upcoming' },
+  { id: 'm13', date: '15/06', time: '23:00', homeTeam: 'Tây Ban Nha', awayTeam: 'Cabo Verde', homeFlag: getFlag('Tây Ban Nha'), awayFlag: getFlag('Cabo Verde'), round: 'Bảng H', stadium: 'Atlanta Stadium', status: 'upcoming' },
 
-  { id: 'm14', date: '16/06', time: '02:00', homeTeam: 'Belgium', awayTeam: 'Egypt', homeFlag: getFlag('Belgium'), awayFlag: getFlag('Egypt'), round: 'Bảng G', stadium: 'Seattle Stadium', status: 'upcoming' },
+  { id: 'm14', date: '16/06', time: '02:00', homeTeam: 'Bỉ', awayTeam: 'Ai Cập', homeFlag: getFlag('Bỉ'), awayFlag: getFlag('Ai Cập'), round: 'Bảng G', stadium: 'Seattle Stadium', status: 'upcoming' },
   { id: 'm15', date: '16/06', time: '05:00', homeTeam: 'Saudi Arabia', awayTeam: 'Uruguay', homeFlag: getFlag('Saudi Arabia'), awayFlag: getFlag('Uruguay'), round: 'Bảng H', stadium: 'Miami Stadium', status: 'upcoming' },
-  { id: 'm16', date: '16/06', time: '08:00', homeTeam: 'IR Iran', awayTeam: 'New Zealand', homeFlag: getFlag('IR Iran'), awayFlag: getFlag('New Zealand'), round: 'Bảng G', stadium: 'Los Angeles Stadium', status: 'upcoming' },
+  { id: 'm16', date: '16/06', time: '08:00', homeTeam: 'Iran', awayTeam: 'New Zealand', homeFlag: getFlag('Iran'), awayFlag: getFlag('New Zealand'), round: 'Bảng G', stadium: 'Los Angeles Stadium', status: 'upcoming' },
 
-  { id: 'm17', date: '17/06', time: '02:00', homeTeam: 'France', awayTeam: 'Senegal', homeFlag: getFlag('France'), awayFlag: getFlag('Senegal'), round: 'Bảng I', stadium: 'NY/NJ Stadium', status: 'upcoming' },
-  { id: 'm18', date: '17/06', time: '05:00', homeTeam: 'BOL/SUR/IRQ', awayTeam: 'Norway', homeFlag: SHIELD_ICON, awayFlag: getFlag('Norway'), round: 'Bảng I', stadium: 'Boston Stadium', status: 'upcoming' },
+  { id: 'm17', date: '17/06', time: '02:00', homeTeam: 'Pháp', awayTeam: 'Senegal', homeFlag: getFlag('Pháp'), awayFlag: getFlag('Senegal'), round: 'Bảng I', stadium: 'NY/NJ Stadium', status: 'upcoming' },
+  { id: 'm18', date: '17/06', time: '05:00', homeTeam: 'BOL/SUR/IRQ', awayTeam: 'Na Uy', homeFlag: SHIELD_ICON, awayFlag: getFlag('Na Uy'), round: 'Bảng I', stadium: 'Boston Stadium', status: 'upcoming' },
   { id: 'm19', date: '17/06', time: '08:00', homeTeam: 'Argentina', awayTeam: 'Algeria', homeFlag: getFlag('Argentina'), awayFlag: getFlag('Algeria'), round: 'Bảng J', stadium: 'Kansas City Stadium', status: 'upcoming' },
-  { id: 'm20', date: '17/06', time: '11:00', homeTeam: 'Austria', awayTeam: 'Jordan', homeFlag: getFlag('Austria'), awayFlag: getFlag('Jordan'), round: 'Bảng J', stadium: 'San Francisco Bay Area', status: 'upcoming' },
+  { id: 'm20', date: '17/06', time: '11:00', homeTeam: 'Áo', awayTeam: 'Jordan', homeFlag: getFlag('Áo'), awayFlag: getFlag('Jordan'), round: 'Bảng J', stadium: 'San Francisco Bay Area', status: 'upcoming' },
 
-  { id: 'm21', date: '18/06', time: '00:00', homeTeam: 'Portugal', awayTeam: 'NCL/JAM/COD', homeFlag: getFlag('Portugal'), awayFlag: SHIELD_ICON, round: 'Bảng K', stadium: 'Houston Stadium', status: 'upcoming' },
-  { id: 'm22', date: '18/06', time: '03:00', homeTeam: 'England', awayTeam: 'Croatia', homeFlag: getFlag('England'), awayFlag: getFlag('Croatia'), round: 'Bảng L', stadium: 'Dallas Stadium', status: 'upcoming' },
+  { id: 'm21', date: '18/06', time: '00:00', homeTeam: 'Bồ Đào Nha', awayTeam: 'NCL/JAM/COD', homeFlag: getFlag('Bồ Đào Nha'), awayFlag: SHIELD_ICON, round: 'Bảng K', stadium: 'Houston Stadium', status: 'upcoming' },
+  { id: 'm22', date: '18/06', time: '03:00', homeTeam: 'Anh', awayTeam: 'Croatia', homeFlag: getFlag('Anh'), awayFlag: getFlag('Croatia'), round: 'Bảng L', stadium: 'Dallas Stadium', status: 'upcoming' },
   { id: 'm23', date: '18/06', time: '06:00', homeTeam: 'Ghana', awayTeam: 'Panama', homeFlag: getFlag('Ghana'), awayFlag: getFlag('Panama'), round: 'Bảng L', stadium: 'Toronto Stadium', status: 'upcoming' },
   { id: 'm24', date: '18/06', time: '09:00', homeTeam: 'Uzbekistan', awayTeam: 'Colombia', homeFlag: getFlag('Uzbekistan'), awayFlag: getFlag('Colombia'), round: 'Bảng K', stadium: 'Mexico City Stadium', status: 'upcoming' },
-  { id: 'm25', date: '18/06', time: '23:00', homeTeam: 'DEN/MKD/CZE/IRL', awayTeam: 'South Africa', homeFlag: SHIELD_ICON, awayFlag: getFlag('South Africa'), round: 'Bảng A', stadium: 'Atlanta Stadium', status: 'upcoming' },
+  { id: 'm25', date: '18/06', time: '23:00', homeTeam: 'DEN/MKD/CZE/IRL', awayTeam: 'Nam Phi', homeFlag: SHIELD_ICON, awayFlag: getFlag('Nam Phi'), round: 'Bảng A', stadium: 'Atlanta Stadium', status: 'upcoming' },
 
   // ... (Skipping some mid-group matches for brevity in code, focusing on flow to knockouts)
   // Representative matches for subsequent dates
-  { id: 'm30', date: '19/06', time: '08:00', homeTeam: 'Mexico', awayTeam: 'Korea Republic', homeFlag: getFlag('Mexico'), awayFlag: getFlag('Korea Republic'), round: 'Bảng A', stadium: 'Guadalajara Stadium', status: 'upcoming' },
+  { id: 'm30', date: '19/06', time: '08:00', homeTeam: 'Mexico', awayTeam: 'Hàn Quốc', homeFlag: getFlag('Mexico'), awayFlag: getFlag('Hàn Quốc'), round: 'Bảng A', stadium: 'Guadalajara Stadium', status: 'upcoming' },
   { id: 'm40', date: '25/06', time: '05:00', homeTeam: 'Morocco', awayTeam: 'Haiti', homeFlag: getFlag('Morocco'), awayFlag: getFlag('Haiti'), round: 'Bảng C', stadium: 'Atlanta Stadium', status: 'upcoming' },
-  { id: 'm50', date: '27/06', time: '07:00', homeTeam: 'Uruguay', awayTeam: 'Spain', homeFlag: getFlag('Uruguay'), awayFlag: getFlag('Spain'), round: 'Bảng H', stadium: 'Guadalajara Stadium', status: 'upcoming' },
+  { id: 'm50', date: '27/06', time: '07:00', homeTeam: 'Uruguay', awayTeam: 'Tây Ban Nha', homeFlag: getFlag('Uruguay'), awayFlag: getFlag('Tây Ban Nha'), round: 'Bảng H', stadium: 'Guadalajara Stadium', status: 'upcoming' },
 
   // --- ROUND OF 32 ---
   { id: 'r32_1', date: '29/06', time: '02:00', homeTeam: '2A', awayTeam: '2B', homeFlag: SHIELD_ICON, awayFlag: SHIELD_ICON, round: 'Vòng 1/32', stadium: 'Los Angeles Stadium', status: 'upcoming' },
@@ -195,7 +219,7 @@ export const WC_GROUPS_MOCK: Record<string, StandingRow[]> = {
     'A': [
         { rank: 1, team: 'Mexico', flag: 'https://flagcdn.com/w40/mx.png', played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, points: 0, gd: '0', form: ['-', '-', '-', '-', '-'] },
         { rank: 2, team: 'Nam Phi', flag: 'https://flagcdn.com/w40/za.png', played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, points: 0, gd: '0', form: ['-', '-', '-', '-', '-'] },
-        { rank: 3, team: 'Cộng hòa Hàn Quốc', flag: 'https://flagcdn.com/w40/kr.png', played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, points: 0, gd: '0', form: ['-', '-', '-', '-', '-'] },
+        { rank: 3, team: 'Hàn Quốc', flag: 'https://flagcdn.com/w40/kr.png', played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, points: 0, gd: '0', form: ['-', '-', '-', '-', '-'] },
         { rank: 4, team: 'ĐAN MẠCH/MKD/CZE/IRL', flag: SHIELD_ICON, played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, points: 0, gd: '0', form: ['-', '-', '-', '-', '-'] }
     ],
     'B': [
@@ -235,9 +259,9 @@ export const WC_GROUPS_MOCK: Record<string, StandingRow[]> = {
         { rank: 4, team: 'New Zealand', flag: 'https://flagcdn.com/w40/nz.png', played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, points: 0, gd: '0', form: ['-', '-', '-', '-', '-'] }
     ],
     'H': [
-        { rank: 1, team: 'Tây ban nha', flag: 'https://flagcdn.com/w40/es.png', played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, points: 0, gd: '0', form: ['-', '-', '-', '-', '-'] },
+        { rank: 1, team: 'Tây Ban Nha', flag: 'https://flagcdn.com/w40/es.png', played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, points: 0, gd: '0', form: ['-', '-', '-', '-', '-'] },
         { rank: 2, team: 'Cabo Verde', flag: 'https://flagcdn.com/w40/cv.png', played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, points: 0, gd: '0', form: ['-', '-', '-', '-', '-'] },
-        { rank: 3, team: 'Ả Rập Xê Út', flag: 'https://flagcdn.com/w40/sa.png', played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, points: 0, gd: '0', form: ['-', '-', '-', '-', '-'] },
+        { rank: 3, team: 'Saudi Arabia', flag: 'https://flagcdn.com/w40/sa.png', played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, points: 0, gd: '0', form: ['-', '-', '-', '-', '-'] },
         { rank: 4, team: 'Uruguay', flag: 'https://flagcdn.com/w40/uy.png', played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, points: 0, gd: '0', form: ['-', '-', '-', '-', '-'] }
     ],
     'I': [
@@ -259,7 +283,7 @@ export const WC_GROUPS_MOCK: Record<string, StandingRow[]> = {
         { rank: 4, team: 'Colombia', flag: 'https://flagcdn.com/w40/co.png', played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, points: 0, gd: '0', form: ['-', '-', '-', '-', '-'] }
     ],
     'L': [
-        { rank: 1, team: 'nước Anh', flag: 'https://flagcdn.com/w40/gb-eng.png', played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, points: 0, gd: '0', form: ['-', '-', '-', '-', '-'] },
+        { rank: 1, team: 'Anh', flag: 'https://flagcdn.com/w40/gb-eng.png', played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, points: 0, gd: '0', form: ['-', '-', '-', '-', '-'] },
         { rank: 2, team: 'Croatia', flag: 'https://flagcdn.com/w40/hr.png', played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, points: 0, gd: '0', form: ['-', '-', '-', '-', '-'] },
         { rank: 3, team: 'Ghana', flag: 'https://flagcdn.com/w40/gh.png', played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, points: 0, gd: '0', form: ['-', '-', '-', '-', '-'] },
         { rank: 4, team: 'Panama', flag: 'https://flagcdn.com/w40/pa.png', played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, points: 0, gd: '0', form: ['-', '-', '-', '-', '-'] }
@@ -272,6 +296,8 @@ export const VIDEO_HIGHLIGHTS: VideoItem[] = [
   { id: 'v3', title: 'Review SVĐ MetLife: Nơi tổ chức chung kết 2026', thumbnail: 'https://picsum.photos/300/500?random=22', duration: '5:15' },
   { id: 'v4', title: 'Phỏng vấn HLV Kim Sang Sik trước trận quyết đấu', thumbnail: 'https://picsum.photos/300/500?random=23', duration: '3:00' },
   { id: 'v5', title: 'Top 10 bàn thắng đẹp nhất vòng loại tháng 3', thumbnail: 'https://picsum.photos/300/500?random=24', duration: '4:20' },
+  { id: 'v6', title: 'Đường đến World Cup: Hành trình của Maroc', thumbnail: 'https://picsum.photos/300/500?random=25', duration: '15:20' },
+  { id: 'v7', title: 'Khoảnh khắc lịch sử: Saudi Arabia đánh bại Argentina', thumbnail: 'https://picsum.photos/300/500?random=26', duration: '2:45' },
 ];
 
 export const POPULAR_TEAMS: Team[] = [
@@ -296,7 +322,7 @@ export const ALL_TEAMS: Team[] = [
   { id: 'pa', name: 'Panama', flag: 'https://flagcdn.com/w40/pa.png', region: 'CONCACAF', isQualified: true, ranking: 44, playerCount: 24, group: 'Group C', participations: 1, displayColor: 'bg-red-700' },
 
   // --- AFC (8) ---
-  { id: 'au', name: 'Australia', flag: 'https://flagcdn.com/w40/au.png', region: 'AFC', isQualified: true, ranking: 24, playerCount: 26, group: 'Group D', participations: 6, displayColor: 'bg-yellow-500 text-black' },
+  { id: 'au', name: 'Úc', flag: 'https://flagcdn.com/w40/au.png', region: 'AFC', isQualified: true, ranking: 24, playerCount: 26, group: 'Group D', participations: 6, displayColor: 'bg-yellow-500 text-black' },
   { id: 'ir', name: 'Iran', flag: 'https://flagcdn.com/w40/ir.png', region: 'AFC', isQualified: true, ranking: 20, playerCount: 26, group: 'Group E', participations: 6, displayColor: 'bg-red-800' },
   { id: 'jp', name: 'Nhật Bản', flag: 'https://flagcdn.com/w40/jp.png', region: 'AFC', isQualified: true, ranking: 18, playerCount: 26, group: 'Group E', participations: 7, displayColor: 'bg-blue-900' },
   { id: 'jo', name: 'Jordan', flag: 'https://flagcdn.com/w40/jo.png', region: 'AFC', isQualified: true, ranking: 71, playerCount: 23, group: 'Group G', participations: 0, displayColor: 'bg-white text-black' },
@@ -325,8 +351,8 @@ export const ALL_TEAMS: Team[] = [
   { id: 'ch', name: 'Thụy Sĩ', flag: 'https://flagcdn.com/w40/ch.png', region: 'UEFA', isQualified: true, ranking: 19, playerCount: 25, group: 'Group C', participations: 12, displayColor: 'bg-red-600' },
   { id: 'gb-sct', name: 'Scotland', flag: 'https://flagcdn.com/w40/gb-sct.png', region: 'UEFA', isQualified: true, ranking: 39, playerCount: 24, group: 'Group D', participations: 8, displayColor: 'bg-blue-900' },
   { id: 'es', name: 'Tây Ban Nha', flag: 'https://flagcdn.com/w40/es.png', region: 'UEFA', isQualified: true, ranking: 8, playerCount: 26, group: 'Group E', participations: 16, displayColor: 'bg-red-500' },
-  { id: 'at', name: 'Austria', flag: 'https://flagcdn.com/w40/at.png', region: 'UEFA', isQualified: true, ranking: 25, playerCount: 25, group: 'Group J', participations: 7, displayColor: 'bg-red-600' },
-  { id: 'be', name: 'Belgium', flag: 'https://flagcdn.com/w40/be.png', region: 'UEFA', isQualified: true, ranking: 3, playerCount: 26, group: 'Group G', participations: 14, displayColor: 'bg-red-900' },
+  { id: 'at', name: 'Áo', flag: 'https://flagcdn.com/w40/at.png', region: 'UEFA', isQualified: true, ranking: 25, playerCount: 25, group: 'Group J', participations: 7, displayColor: 'bg-red-600' },
+  { id: 'be', name: 'Bỉ', flag: 'https://flagcdn.com/w40/be.png', region: 'UEFA', isQualified: true, ranking: 3, playerCount: 26, group: 'Group G', participations: 14, displayColor: 'bg-red-900' },
 
   // --- OFC (1) ---
   { id: 'nz', name: 'New Zealand', flag: 'https://flagcdn.com/w40/nz.png', region: 'OFC', isQualified: true, ranking: 104, playerCount: 23, group: 'Group H', participations: 2, displayColor: 'bg-black' },
@@ -336,7 +362,7 @@ export const ALL_TEAMS: Team[] = [
   { id: 'sn', name: 'Senegal', flag: 'https://flagcdn.com/w40/sn.png', region: 'CAF', isQualified: true, ranking: 17, playerCount: 26, group: 'Group K', participations: 3, displayColor: 'bg-green-700' },
   { id: 'za', name: 'Nam Phi', flag: 'https://flagcdn.com/w40/za.png', region: 'CAF', isQualified: true, ranking: 59, playerCount: 24, group: 'Group L', participations: 3, displayColor: 'bg-yellow-500 text-black' },
   { id: 'cv', name: 'Cabo Verde', flag: 'https://flagcdn.com/w40/cv.png', region: 'CAF', isQualified: true, ranking: 65, playerCount: 23, group: 'Group H', participations: 0, displayColor: 'bg-blue-900' },
-  { id: 'ma', name: 'Morocco', flag: 'https://flagcdn.com/w40/ma.png', region: 'CAF', isQualified: true, ranking: 13, playerCount: 26, group: 'Group F', participations: 6, displayColor: 'bg-red-700' },
+  { id: 'ma', name: 'Ma-rốc', flag: 'https://flagcdn.com/w40/ma.png', region: 'CAF', isQualified: true, ranking: 13, playerCount: 26, group: 'Group F', participations: 6, displayColor: 'bg-red-700' },
   { id: 'ci', name: 'Bờ Biển Ngà', flag: 'https://flagcdn.com/w40/ci.png', region: 'CAF', isQualified: true, ranking: 38, playerCount: 25, group: 'Group D', participations: 3, displayColor: 'bg-orange-600' },
   { id: 'dz', name: 'Algeria', flag: 'https://flagcdn.com/w40/dz.png', region: 'CAF', isQualified: true, ranking: 43, playerCount: 25, group: 'Group J', participations: 4, displayColor: 'bg-green-600' },
   { id: 'tn', name: 'Tunisia', flag: 'https://flagcdn.com/w40/tn.png', region: 'CAF', isQualified: true, ranking: 41, playerCount: 24, group: 'Group A', participations: 6, displayColor: 'bg-red-600' },
