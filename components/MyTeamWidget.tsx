@@ -83,16 +83,14 @@ const MyTeamWidget: React.FC<MyTeamWidgetProps> = ({ onMatchClick, onTeamClick }
     team.name.toLowerCase().includes(query.toLowerCase())
   );
 
-  // Top 8 Teams for Quick Selection (Expanded)
-  const TOP_8_SUGGESTIONS = [
-      ALL_TEAMS.find(t => t.name === 'Việt Nam'),
+  // Top 6 Teams for Quick Selection (Optimized for 1 row)
+  const TOP_6_SUGGESTIONS = [
       ALL_TEAMS.find(t => t.name === 'Anh'),
       ALL_TEAMS.find(t => t.name === 'Brasil'),
       ALL_TEAMS.find(t => t.name === 'Argentina'),
       ALL_TEAMS.find(t => t.name === 'Đức'),
       ALL_TEAMS.find(t => t.name === 'Pháp'),
       ALL_TEAMS.find(t => t.name === 'Bồ Đào Nha'),
-      ALL_TEAMS.find(t => t.name === 'Tây Ban Nha'),
   ].filter(Boolean) as Team[];
 
   const activeTeam = myTeams.find(t => t.id === activeTeamId);
@@ -126,47 +124,47 @@ const MyTeamWidget: React.FC<MyTeamWidgetProps> = ({ onMatchClick, onTeamClick }
         <div className="absolute -top-20 -right-20 w-56 h-56 bg-gray-50 rounded-full blur-3xl opacity-60 pointer-events-none"></div>
         <div className="absolute -bottom-20 -left-20 w-56 h-56 bg-[#9f224e]/5 rounded-full blur-3xl pointer-events-none"></div>
 
-        <div className="flex-1 flex flex-col items-center justify-center px-4 py-6 z-10">
+        <div className="flex-1 flex flex-col items-center justify-center px-4 py-8 z-10">
             
             {/* Header Text */}
-            <div className="text-center mb-6">
-                <h3 className="text-xl font-black text-gray-900 font-serif uppercase tracking-tight flex items-center justify-center gap-2 mb-1">
-                    <Heart className="w-5 h-5 text-[#9f224e] fill-[#9f224e]" /> Chọn đội bóng yêu thích
+            <div className="text-center mb-8">
+                <h3 className="text-2xl font-black text-gray-900 font-serif uppercase tracking-tight flex items-center justify-center gap-2 mb-2">
+                    <Heart className="w-6 h-6 text-[#9f224e] fill-[#9f224e]" /> CHỌN ĐỘI BÓNG YÊU THÍCH
                 </h3>
-                <p className="text-gray-500 text-xs font-medium">Theo dõi để nhận thông báo lịch thi đấu và tin tức độc quyền.</p>
+                <p className="text-gray-500 text-sm font-medium">Theo dõi để nhận thông báo lịch thi đấu và tin tức độc quyền.</p>
             </div>
 
-            {/* 1. TOP 8 TEAMS GRID (4x2 Grid) */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full max-w-3xl mb-8">
-                {TOP_8_SUGGESTIONS.map(team => {
+            {/* 1. TOP 6 TEAMS GRID (6 Columns - Single Row) */}
+            <div className="grid grid-cols-3 md:grid-cols-6 gap-4 w-full max-w-5xl mb-8">
+                {TOP_6_SUGGESTIONS.map(team => {
                     const isSelected = myTeams.some(t => t.id === team.id);
                     return (
                         <button 
                             key={team.id}
                             onClick={() => !isSelected && addTeam(team)}
                             disabled={isSelected}
-                            className={`flex flex-col items-center p-3 rounded-xl border transition-all duration-300 group relative
+                            className={`flex flex-col items-center justify-center py-5 px-2 rounded-2xl border transition-all duration-300 group relative h-full
                                 ${isSelected 
                                     ? 'bg-gray-50 border-gray-100 opacity-60 grayscale cursor-default' 
-                                    : 'bg-white border-gray-200 hover:border-[#9f224e] hover:shadow-lg hover:-translate-y-0.5 cursor-pointer'
+                                    : 'bg-white border-gray-200 hover:border-[#9f224e] hover:shadow-lg hover:-translate-y-1 cursor-pointer'
                                 }
                             `}
                         >
-                            <div className="w-12 h-8 mb-2 shadow-sm rounded overflow-hidden border border-gray-100 relative">
+                            <div className="w-16 h-10 mb-3 shadow-md rounded-[2px] overflow-hidden border border-gray-100 relative">
                                 <img src={team.flag} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" alt={team.name} />
                             </div>
                             
-                            <span className={`text-xs font-bold truncate w-full text-center mb-2 ${isSelected ? 'text-gray-400' : 'text-gray-900 group-hover:text-[#9f224e]'}`}>
+                            <span className={`text-sm font-bold truncate w-full text-center mb-3 ${isSelected ? 'text-gray-400' : 'text-gray-900 group-hover:text-[#9f224e]'}`}>
                                 {team.name}
                             </span>
                             
                             {/* Follow Button within Card */}
-                            <div className={`w-full py-1.5 rounded-full text-[9px] font-bold uppercase flex items-center justify-center gap-1 transition-colors ${
+                            <div className={`w-[80%] py-1.5 rounded-full text-[10px] font-bold uppercase flex items-center justify-center gap-1 transition-colors ${
                                 isSelected 
                                 ? 'bg-gray-100 text-gray-400' 
                                 : 'bg-[#9f224e]/5 text-[#9f224e] group-hover:bg-[#9f224e] group-hover:text-white'
                             }`}>
-                                {isSelected ? <Check className="w-2.5 h-2.5" /> : <Plus className="w-2.5 h-2.5" />}
+                                {isSelected ? <Check className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
                                 {isSelected ? 'Đã chọn' : 'Theo dõi'}
                             </div>
                         </button>
@@ -175,7 +173,7 @@ const MyTeamWidget: React.FC<MyTeamWidgetProps> = ({ onMatchClick, onTeamClick }
             </div>
 
             {/* 2. SEARCH BAR (Below Grid) */}
-            <div className="w-full max-w-md relative z-20">
+            <div className="w-full max-w-lg relative z-20">
                 <div className="relative group">
                     <input 
                         type="text" 
@@ -183,9 +181,9 @@ const MyTeamWidget: React.FC<MyTeamWidgetProps> = ({ onMatchClick, onTeamClick }
                         onChange={handleSearch}
                         onFocus={() => setIsSearchFocused(true)}
                         placeholder="Tìm kiếm đội tuyển khác..."
-                        className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-full text-sm font-medium focus:outline-none focus:border-[#9f224e] focus:ring-4 focus:ring-[#9f224e]/5 transition-all shadow-sm hover:shadow-md hover:border-gray-300"
+                        className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-full text-sm font-medium focus:outline-none focus:border-[#9f224e] focus:ring-4 focus:ring-[#9f224e]/5 transition-all shadow-sm hover:shadow-md hover:border-gray-300"
                     />
-                    <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 group-hover:text-[#9f224e] transition-colors" />
+                    <Search className="w-5 h-5 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2 group-hover:text-[#9f224e] transition-colors" />
                     
                     {/* Search Dropdown */}
                     {isSearchFocused && query.length > 0 && (
@@ -212,7 +210,7 @@ const MyTeamWidget: React.FC<MyTeamWidgetProps> = ({ onMatchClick, onTeamClick }
                     )}
                 </div>
                 <div className="text-center mt-3">
-                    <span className="text-[10px] text-gray-400 font-medium">
+                    <span className="text-[11px] text-gray-400 font-medium">
                         Tìm kiếm trong 48 đội tuyển tham dự World Cup 2026
                     </span>
                 </div>
