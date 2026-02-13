@@ -77,7 +77,7 @@ const App: React.FC = () => {
         {/* First News Stream + Sidebar */}
         <div className="max-w-[1100px] mx-auto px-4 grid grid-cols-1 lg:grid-cols-[760px_300px] gap-8 mb-12">
             <div className="min-w-0">
-               <NewsFeed newsItems={stream1News} title="Dòng sự kiện" />
+               <NewsFeed newsItems={stream1News} />
             </div>
 
             <aside className="w-full flex flex-col gap-6">
@@ -89,7 +89,7 @@ const App: React.FC = () => {
 
         {/* My Team Widget */}
         <div className="max-w-[1100px] mx-auto px-4 mb-12">
-            <MyTeamWidget onMatchClick={handleOpenMatch} />
+            <MyTeamWidget onMatchClick={handleOpenMatch} onTeamClick={handleOpenTeam} />
         </div>
 
         {/* Videos Section */}

@@ -38,7 +38,7 @@ const QuickAccess: React.FC<QuickAccessProps> = ({ onNavigate, currentView }) =>
   }
 
   return (
-    <div className="bg-white border-b border-gray-200">
+    <div className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
       <div className="max-w-[1100px] mx-auto px-4">
         <nav className="flex items-center justify-between h-14">
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
