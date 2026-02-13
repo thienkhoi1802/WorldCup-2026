@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { Search, Menu } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search } from 'lucide-react';
 
 interface HeaderProps {
     onSearchClick?: () => void;
@@ -8,68 +8,83 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ onSearchClick, onNavigateHome }) => {
-  return (
-    <header className="bg-white border-b border-gray-200 py-4 shadow-sm relative z-20">
-      <div className="max-w-[1140px] mx-auto px-4 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-           {/* Mobile Menu Trigger */}
-           <button className="md:hidden text-gray-600 hover:text-black">
-              <Menu className="w-6 h-6" />
-           </button>
+  const [timeLeft, setTimeLeft] = useState({
+    days: 118,
+    hours: 13,
+    mins: 17,
+    secs: 17
+  });
 
-          <div className="flex flex-col cursor-pointer group" onClick={onNavigateHome}>
-            <div className="flex items-center gap-3">
-              {/* Logo */}
-              <div className="w-10 h-10 bg-[#9f224e] rounded-xl flex items-center justify-center text-white font-black text-sm shrink-0 shadow-sm transform -skew-x-6 group-hover:rotate-3 transition-transform">
-                WC26
-              </div>
-              <h1 className="text-2xl font-black tracking-tight text-gray-900 font-serif group-hover:text-[#9f224e] transition-colors">World Cup 2026</h1>
-            </div>
-            <p className="hidden md:block text-xs text-gray-500 mt-1 font-bold tracking-widest uppercase">
-              Cổng thông tin bóng đá số 1 Việt Nam
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev.secs > 0) return { ...prev, secs: prev.secs - 1 };
+        if (prev.mins > 0) return { ...prev, mins: prev.mins - 1, secs: 59 };
+        if (prev.hours > 0) return { ...prev, hours: prev.hours - 1, mins: 59, secs: 59 };
+        if (prev.days > 0) return { ...prev, days: prev.days - 1, hours: 23, mins: 59, secs: 59 };
+        return prev;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <header className="bg-white border-b border-gray-100 py-3 md:py-4">
+      <div className="max-w-[1100px] mx-auto px-4 flex items-center justify-between">
+        
+        {/* Left: Branding */}
+        <div className="flex items-center gap-3 md:gap-4 cursor-pointer group" onClick={onNavigateHome}>
+          <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center">
+             <img 
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/2026_FIFA_World_Cup_logo.svg/440px-2026_FIFA_World_Cup_logo.svg.png" 
+                alt="FIFA World Cup 2026" 
+                className="w-full h-full object-contain filter grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300"
+                onError={(e) => {
+                   e.currentTarget.src = "https://cdn-icons-png.flaticon.com/512/10602/10602939.png";
+                }}
+             />
+          </div>
+          <div className="flex flex-col justify-center">
+            <h1 className="text-lg md:text-2xl font-black leading-none tracking-tighter uppercase font-sans text-gray-900 group-hover:text-[#9f224e] transition-colors">
+              FIFA World Cup 2026™
+            </h1>
+            <p className="text-[10px] font-bold text-gray-400 mt-0.5 uppercase tracking-[0.2em] group-hover:text-gray-600 transition-colors">
+              North America
             </p>
           </div>
         </div>
-        
-        {/* Right Side: Search & Countdown */}
-        <div className="flex items-center gap-6">
-            {/* Expanded Search Bar (Desktop) */}
-            <div 
-                onClick={onSearchClick}
-                className="hidden md:flex items-center gap-3 bg-gray-100/80 hover:bg-gray-100 transition-all px-4 py-2.5 rounded-full cursor-pointer w-72 group border border-transparent hover:border-gray-200 hover:shadow-sm"
-            >
-                <Search className="w-4 h-4 text-gray-400 group-hover:text-[#9f224e] transition-colors" />
-                <span className="text-sm text-gray-400 font-medium group-hover:text-gray-600 truncate">Tìm kiếm đội tuyển, tin tức...</span>
-                <span className="ml-auto text-[10px] font-bold text-gray-300 bg-white px-1.5 py-0.5 rounded border border-gray-100 group-hover:border-gray-200 group-hover:text-gray-400 transition-colors">⌘K</span>
-            </div>
 
-            {/* Mobile Search Icon */}
-             <button 
-                onClick={onSearchClick}
-                className="md:hidden flex items-center justify-center w-9 h-9 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors"
-            >
-                <Search className="w-4 h-4" />
-            </button>
-
-            {/* Countdown Timer */}
-            <div className="flex flex-col items-end border-l border-gray-100 pl-6">
-                <span className="hidden md:block text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Kick-off Countdown</span>
-                <div className="flex gap-1.5 text-center">
-                    <div className="bg-[#1a1a1a] text-white rounded-lg px-2 py-1 min-w-[36px] md:min-w-[42px] shadow-sm">
-                        <span className="block text-sm md:text-lg font-bold leading-none font-mono">354</span>
-                        <span className="text-[8px] text-gray-400 uppercase font-bold">Ngày</span>
-                    </div>
-                    <div className="bg-white text-gray-900 rounded-lg px-2 py-1 min-w-[36px] md:min-w-[42px] border border-gray-200 shadow-sm">
-                        <span className="block text-sm md:text-lg font-bold leading-none font-mono">12</span>
-                        <span className="text-[8px] text-gray-400 uppercase font-bold">Giờ</span>
-                    </div>
-                     <div className="hidden md:block bg-white text-gray-900 rounded-lg px-2 py-1 min-w-[42px] border border-gray-200 shadow-sm">
-                        <span className="block text-lg font-bold leading-none font-mono">45</span>
-                        <span className="text-[8px] text-gray-400 uppercase font-bold">Phút</span>
-                    </div>
+        {/* Right Section: Countdown + Search */}
+        <div className="flex items-center gap-6 xl:gap-8">
+          
+          {/* Countdown Display - Modern & Light */}
+          <div className="hidden lg:flex items-center gap-5">
+            {[
+               { val: timeLeft.days, label: 'DAYS' },
+               { val: timeLeft.hours, label: 'HOURS' },
+               { val: timeLeft.mins, label: 'MINS' }
+            ].map((item, i) => (
+                <div key={i} className="flex flex-col items-center">
+                    <span className="text-xl font-black leading-none text-gray-900 font-mono tabular-nums">{item.val}</span>
+                    <span className="text-[9px] font-bold uppercase text-gray-400 tracking-wider mt-0.5">{item.label}</span>
                 </div>
-            </div>
+            ))}
+          </div>
+
+          {/* Vertical Separator */}
+          <div className="h-8 w-px bg-gray-100 hidden lg:block"></div>
+
+          {/* Search Bar - Minimalist Pill Style */}
+          <div 
+            onClick={onSearchClick}
+            className="flex items-center gap-3 bg-gray-50 hover:bg-white border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all px-4 py-2.5 rounded-full cursor-pointer w-48 xl:w-64 group"
+          >
+            <Search className="w-4 h-4 text-gray-400 group-hover:text-[#9f224e]" />
+            <span className="text-[13px] text-gray-400 font-medium truncate group-hover:text-gray-800">Tìm kiếm...</span>
+            <span className="ml-auto text-[10px] font-bold text-gray-300 hidden xl:inline group-hover:text-gray-400">⌘K</span>
+          </div>
         </div>
+
       </div>
     </header>
   );

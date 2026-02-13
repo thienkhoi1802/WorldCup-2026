@@ -1,8 +1,8 @@
 
-import React, { useState } from 'react';
-import { ALL_TEAMS } from '../constants';
+import React, { useState, useRef, useEffect } from 'react';
+import { ALL_TEAMS, WC_GROUPS_MOCK } from '../constants';
 import { Team } from '../types';
-import { Search, ArrowUpDown, SlidersHorizontal, AlertCircle } from 'lucide-react';
+import { Search, Home, X, ChevronRight, Check } from 'lucide-react';
 import MatchScheduleBox from './MatchScheduleBox';
 import StandingsWidget from './StandingsWidget';
 import PollWidget from './PollWidget';
@@ -14,46 +14,67 @@ interface TeamsPageProps {
 const REGIONS = [
     { code: 'ALL', name: 'Tất cả' },
     { code: 'AFC', name: 'Châu Á' },
-    { code: 'UEFA', name: 'Châu Âu' },
-    { code: 'CONMEBOL', name: 'Nam Mỹ' },
-    { code: 'CONCACAF', name: 'Bắc Mỹ' },
     { code: 'CAF', name: 'Châu Phi' },
+    { code: 'CONCACAF', name: 'Bắc Mỹ' },
+    { code: 'CONMEBOL', name: 'Nam Mỹ' },
+    { code: 'OFC', name: 'Châu Đại Dương' },
+    { code: 'UEFA', name: 'Châu Âu' },
 ];
 
-const TeamCard: React.FC<{ team: Team; label?: string; onClick?: (team: Team) => void }> = ({ team, label, onClick }) => {
-    // Determine text contrast based on the background class provided in constants
-    const isDarkText = team.displayColor?.includes('text-black');
+const findGroup = (teamName: string) => {
+    for (const [group, teams] of Object.entries(WC_GROUPS_MOCK)) {
+        if (teams.some(t => t.team === teamName)) return group;
+    }
+    return null;
+}
+
+const TeamCard: React.FC<{ team: Team; onClick?: (team: Team) => void }> = ({ team, onClick }) => {
+    const isHost = ['México', 'Hoa Kỳ', 'Canada'].includes(team.name);
     
-    const textColorClass = isDarkText ? 'text-gray-900' : 'text-white';
-    const subTextClass = isDarkText ? 'text-gray-900/60' : 'text-white/80';
-    const borderClass = isDarkText ? 'border-black/10' : 'border-white/10';
+    // Determine text color based on background class provided in constants
+    const hasBlackText = team.displayColor?.includes('text-black');
+    const titleColor = hasBlackText ? 'text-gray-900' : 'text-white';
+    const subTitleColor = hasBlackText ? 'text-gray-800/80' : 'text-white/80';
+    
+    const participations = team.participations || Math.floor(Math.random() * 10) + 1;
+    const group = findGroup(team.name);
 
     return (
         <div 
-            onClick={() => onClick && onClick(team)}
-            className={`${team.displayColor || 'bg-gray-800'} ${textColorClass} h-[200px] p-4 rounded-lg flex flex-col justify-between cursor-pointer hover:shadow-lg hover:scale-[1.02] transition-all duration-300 shadow-sm relative overflow-hidden group`}
+            onClick={() => onClick && onClick(team)} 
+            className="flex flex-col bg-white rounded-none md:rounded-lg overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer group h-full"
         >
-            {/* Subtle border for light cards to define edges against white page background */}
-            {isDarkText && <div className="absolute inset-0 border border-black/5 rounded-lg pointer-events-none"></div>}
-            
-            <div className="absolute right-0 top-0 w-24 h-24 bg-white/10 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
-
-            <div className="relative z-10">
-                <div className="flex items-start justify-between mb-2">
-                    <img src={team.flag} alt={team.name} className="w-8 h-5 object-cover shadow-sm rounded-[2px]" />
-                    {label && <span className={`text-[9px] uppercase font-bold ${subTextClass} tracking-wider bg-white/20 px-1.5 py-0.5 rounded`}>{label}</span>}
-                </div>
-                <h3 className="text-2xl font-bold leading-tight font-serif tracking-tight">{team.name}</h3>
+            {/* Top Section: Colored Background */}
+            <div className={`${team.displayColor || 'bg-gray-800'} h-[160px] p-5 flex flex-col justify-between relative`}>
+                 <div className="flex justify-between items-start relative z-10">
+                    <img src={team.flag} className="w-9 h-6 object-cover shadow-sm border border-black/10 rounded-[1px]" alt={team.name} />
+                 </div>
+                 
+                 <div className="relative z-10">
+                    {isHost && (
+                        <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${subTitleColor}`}>Host country</span>
+                    )}
+                    <h3 className={`text-2xl md:text-3xl font-sans font-medium leading-none tracking-tight ${titleColor}`}>
+                        {team.name}
+                    </h3>
+                 </div>
             </div>
-            
-            <div className="grid grid-cols-2 gap-y-1 text-[10px] uppercase font-medium mt-2 relative z-10">
-                <div className="flex flex-col">
-                    <span className={subTextClass}>Bảng đấu</span>
-                    <span className="font-bold">{team.group || 'TBD'}</span>
-                </div>
-                <div className="flex flex-col items-end text-right">
-                    <span className={subTextClass}>Hạng FIFA</span>
-                    <span className="font-bold text-lg leading-none">{team.ranking || '--'}</span>
+
+            {/* Bottom Section: Stats */}
+            <div className="p-4 bg-white flex-1 flex flex-col justify-end">
+                <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-gray-50 pb-2">
+                         <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Stage</span>
+                         <span className="text-xs font-bold text-gray-900">{group ? `Group ${group}` : 'Qualifying'}</span>
+                    </div>
+                    <div className="flex items-center justify-between border-b border-gray-50 pb-2">
+                         <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">World Ranking</span>
+                         <span className="text-xs font-bold text-gray-900">{team.ranking || '--'}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                         <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Participations</span>
+                         <span className="text-xs font-bold text-gray-900">{participations}</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -63,177 +84,176 @@ const TeamCard: React.FC<{ team: Team; label?: string; onClick?: (team: Team) =>
 const TeamsPage: React.FC<TeamsPageProps> = ({ onTeamClick }) => {
   const [selectedRegion, setSelectedRegion] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState<'name' | 'rank'>('name');
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
 
-  const hosts = ['us', 'ca', 'mx'];
+  // Close search dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setIsSearchFocused(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const filteredTeams = ALL_TEAMS.filter(t => 
+    t.isQualified && 
+    (selectedRegion === 'ALL' || t.region === selectedRegion) && 
+    (!searchQuery || t.name.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
   
-  // Filter Logic
-  const filteredTeams = ALL_TEAMS.filter(t => {
-      // Basic qualified check
-      if (!t.isQualified) return false;
-      
-      // Region check
-      if (selectedRegion !== 'ALL' && t.region !== selectedRegion) return false;
+  const dropdownTeams = ALL_TEAMS.filter(t => 
+      t.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-      // Search check
-      if (searchQuery && !t.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
-      
-      return true;
-  });
+  const renderRegionSection = (regionCode: string, regionName: string) => {
+      const teams = filteredTeams.filter(t => t.region === regionCode);
+      if (teams.length === 0) return null;
 
-  const hostTeamsList = filteredTeams.filter(t => hosts.includes(t.id));
-  
-  // Sort Logic for Qualified Teams
-  const qualifiedTeamsList = filteredTeams
-    .filter(t => !hosts.includes(t.id))
-    .sort((a, b) => {
-        if (sortBy === 'rank') {
-            return (a.ranking || 999) - (b.ranking || 999);
-        }
-        return a.name.localeCompare(b.name);
-    });
+      return (
+          <div key={regionCode} className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <div className="flex items-center gap-3 mb-6 border-b border-gray-200 pb-3">
+                  <h2 className="text-xl font-black text-gray-900 uppercase font-serif tracking-tight">{regionName}</h2>
+                  <span className="bg-gray-100 text-gray-600 text-xs font-bold px-2 py-1 rounded-full">{teams.length}</span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {teams.map(team => <TeamCard key={team.id} team={team} onClick={onTeamClick} />)}
+              </div>
+          </div>
+      );
+  };
 
   return (
     <div className="bg-[#f0f2f5] min-h-screen font-sans pb-12">
-        
-       <div className="max-w-[1140px] mx-auto px-4 mt-6">
+       <div className="max-w-[1100px] mx-auto px-4 mt-8">
            <div className="grid grid-cols-1 lg:grid-cols-[760px_300px] gap-8">
                 
-                {/* --- LEFT COLUMN: MAIN CONTENT (760px) --- */}
+                {/* Main Column: 760px */}
                 <div className="min-w-0">
                     
-                    {/* Header & Controls - Optimized Layout */}
-                    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 mb-6">
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-                            <h1 className="text-2xl text-gray-900 font-serif font-black uppercase tracking-tight shrink-0">Đội tuyển</h1>
+                    {/* Header: Title Left, Search Right */}
+                    <div className="bg-white rounded-t-xl border border-gray-200 border-b-0 p-6">
+                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                            <div>
+                                <h1 className="text-3xl text-gray-900 font-serif font-black uppercase tracking-tighter">Đội tuyển</h1>
+                                <p className="text-gray-500 text-sm mt-1 font-medium">Danh sách 48 đội bóng tranh tài tại World Cup 2026</p>
+                            </div>
                             
-                            <div className="flex flex-1 items-center gap-4 w-full md:w-auto">
-                                {/* Search */}
-                                <div className="relative flex-1 max-w-md ml-auto">
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                            {/* Search Box with Dropdown */}
+                            <div className="relative" ref={searchRef}>
+                                <div className={`flex items-center border transition-all rounded-md bg-white ${isSearchFocused ? 'border-[#9f224e] ring-1 ring-[#9f224e] w-full md:w-[280px]' : 'border-gray-300 w-full md:w-[240px] hover:border-gray-400'}`}>
+                                    <Search className="w-4 h-4 text-gray-400 ml-3 shrink-0" />
                                     <input 
                                         type="text" 
                                         placeholder="Tìm kiếm đội tuyển..." 
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-full text-sm focus:outline-none focus:border-[#9f224e] focus:ring-1 focus:ring-[#9f224e] transition-all placeholder:text-gray-400"
+                                        value={searchQuery} 
+                                        onFocus={() => setIsSearchFocused(true)}
+                                        onChange={(e) => setSearchQuery(e.target.value)} 
+                                        className="w-full pl-2 pr-2 py-2 text-sm outline-none bg-transparent placeholder:text-gray-400 text-gray-700" 
                                     />
+                                    {searchQuery && (
+                                        <button 
+                                            onClick={() => { setSearchQuery(''); setIsSearchFocused(true); }}
+                                            className="mr-2 text-gray-400 hover:text-black"
+                                        >
+                                            <X className="w-3.5 h-3.5" />
+                                        </button>
+                                    )}
                                 </div>
-                                
-                                {/* Sort (Desktop) */}
-                                <div className="hidden md:flex items-center gap-2 shrink-0">
-                                    <span className="text-xs font-bold text-gray-400 uppercase mr-1">Sắp xếp:</span>
-                                    <div className="flex bg-gray-100 rounded-lg p-1">
-                                        <button 
-                                            onClick={() => setSortBy('name')}
-                                            className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all ${sortBy === 'name' ? 'bg-white text-black shadow-sm' : 'text-gray-500 hover:text-gray-900'}`}
-                                        >
-                                            A-Z
-                                        </button>
-                                        <button 
-                                            onClick={() => setSortBy('rank')}
-                                            className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all ${sortBy === 'rank' ? 'bg-white text-black shadow-sm' : 'text-gray-500 hover:text-gray-900'}`}
-                                        >
-                                            Hạng FIFA
-                                        </button>
+
+                                {/* Dropdown Results */}
+                                {isSearchFocused && (
+                                    <div className="absolute top-full right-0 mt-2 w-full md:w-[320px] bg-white border border-gray-200 rounded-xl shadow-2xl z-50 max-h-[400px] overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-200">
+                                        <div className="p-2">
+                                            <div className="text-[10px] font-bold text-gray-400 uppercase px-3 py-2 bg-gray-50/50 rounded-lg mb-1">
+                                                {searchQuery ? `Kết quả cho "${searchQuery}"` : 'Tất cả đội tuyển'}
+                                            </div>
+                                            {dropdownTeams.length > 0 ? (
+                                                <div className="space-y-1">
+                                                    {dropdownTeams.map(team => (
+                                                        <button
+                                                            key={team.id}
+                                                            onClick={() => {
+                                                                if (onTeamClick) onTeamClick(team);
+                                                                setIsSearchFocused(false);
+                                                                setSearchQuery('');
+                                                            }}
+                                                            className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-gray-50 rounded-lg transition-colors text-left group"
+                                                        >
+                                                            <div className="relative shrink-0">
+                                                                <img src={team.flag} alt={team.name} className="w-8 h-6 object-cover shadow-sm rounded-sm border border-gray-100" />
+                                                            </div>
+                                                            <div className="flex-1 min-w-0">
+                                                                <div className="text-sm font-bold text-gray-900 group-hover:text-[#9f224e] truncate">{team.name}</div>
+                                                                <div className="text-[10px] text-gray-500">{team.region}</div>
+                                                            </div>
+                                                            <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-[#9f224e]" />
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <div className="px-3 py-6 text-center text-sm text-gray-500">
+                                                    Không tìm thấy đội tuyển nào.
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
+                                )}
                             </div>
-                        </div>
-                        
-                        {/* Filters & Mobile Sort */}
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 border-t border-gray-100 pt-4">
-                             <div className="flex items-center gap-2 overflow-x-auto no-scrollbar w-full pb-1 sm:pb-0">
-                                <button
-                                    onClick={() => setSelectedRegion('ALL')}
-                                    className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors border ${selectedRegion === 'ALL' ? 'bg-black border-black text-white' : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300'}`}
-                                >
-                                    Tất cả
-                                </button>
-                                <div className="w-px h-5 bg-gray-300 mx-1 shrink-0 hidden sm:block"></div>
-                                {REGIONS.filter(r => r.code !== 'ALL').map((region) => (
-                                    <button
-                                        key={region.code}
-                                        onClick={() => setSelectedRegion(region.code)}
-                                        className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors border ${selectedRegion === region.code ? 'bg-black border-black text-white' : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300'}`}
-                                    >
-                                        {region.name}
-                                    </button>
-                                ))}
-                            </div>
-                             
-                             {/* Mobile Sort */}
-                             <div className="md:hidden flex items-center gap-2 shrink-0 ml-auto w-full justify-end border-t border-gray-50 sm:border-0 pt-3 sm:pt-0">
-                                    <span className="text-[10px] font-bold text-gray-400 uppercase">Xếp theo:</span>
-                                    <div className="flex bg-gray-100 rounded-lg p-1">
-                                        <button 
-                                            onClick={() => setSortBy('name')}
-                                            className={`px-3 py-1 text-[10px] font-bold rounded-md transition-all ${sortBy === 'name' ? 'bg-white text-black shadow-sm' : 'text-gray-500'}`}
-                                        >
-                                            A-Z
-                                        </button>
-                                        <button 
-                                            onClick={() => setSortBy('rank')}
-                                            className={`px-3 py-1 text-[10px] font-bold rounded-md transition-all ${sortBy === 'rank' ? 'bg-white text-black shadow-sm' : 'text-gray-500'}`}
-                                        >
-                                            Hạng
-                                        </button>
-                                    </div>
-                             </div>
                         </div>
                     </div>
 
-                    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                        {/* HOST COUNTRY SECTION */}
-                        {hostTeamsList.length > 0 && (
-                            <section>
-                                <h2 className="text-lg font-bold text-gray-900 uppercase font-serif mb-4 flex items-center gap-2">
-                                    <span className="w-1.5 h-6 bg-[#9f224e] rounded"></span>
-                                    Chủ nhà
-                                </h2>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                                    {hostTeamsList.map(team => (
-                                        <TeamCard key={team.id} team={team} label="Chủ nhà" onClick={onTeamClick} />
-                                    ))}
-                                </div>
-                            </section>
-                        )}
-
-                        {/* QUALIFIED TEAMS SECTION */}
-                        {qualifiedTeamsList.length > 0 ? (
-                            <section>
-                                <div className="flex items-end gap-3 mb-4 border-b border-gray-200 pb-2">
-                                    <h2 className="text-lg font-bold text-gray-900 uppercase font-serif flex items-center gap-2">
-                                        <span className="w-1.5 h-6 bg-gray-900 rounded"></span>
-                                        Đội tuyển tham dự
-                                    </h2>
-                                    <span className="text-sm font-bold text-gray-400 mb-1">({qualifiedTeamsList.length})</span>
-                                </div>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                                    {qualifiedTeamsList.map(team => (
-                                        <TeamCard key={team.id} team={team} onClick={onTeamClick} />
-                                    ))}
-                                </div>
-                            </section>
-                        ) : (
-                            <div className="py-20 text-center border-2 border-dashed border-gray-200 rounded-xl bg-white">
-                                <AlertCircle className="w-10 h-10 text-gray-300 mx-auto mb-3" />
-                                <p className="text-gray-500 font-medium">Không tìm thấy đội tuyển nào.</p>
+                    {/* Sticky Tabs Bar */}
+                    <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border border-gray-200 border-t-0 rounded-b-xl shadow-sm px-6 py-3 mb-8">
+                        <div className="flex flex-wrap gap-2">
+                            {REGIONS.map((region) => (
                                 <button 
-                                    onClick={() => {setSearchQuery(''); setSelectedRegion('ALL');}}
-                                    className="mt-3 text-sm text-[#9f224e] font-bold hover:underline"
+                                    key={region.code} 
+                                    onClick={() => {
+                                        setSelectedRegion(region.code);
+                                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                                    }} 
+                                    className={`px-3 py-1.5 rounded-md text-[11px] font-black uppercase tracking-wide transition-all border ${
+                                        selectedRegion === region.code 
+                                        ? 'bg-[#9f224e] border-[#9f224e] text-white shadow-md' 
+                                        : 'bg-white border-gray-200 text-gray-500 hover:border-gray-400 hover:text-gray-900'
+                                    }`}
                                 >
-                                    Xóa bộ lọc
+                                    {region.name}
                                 </button>
-                            </div>
-                        )}
+                            ))}
+                        </div>
                     </div>
+
+                    {/* Hosts Highlight (Only on ALL view and no search) */}
+                    {(selectedRegion === 'ALL' || selectedRegion === 'CONCACAF') && !searchQuery && (
+                         <div className="mb-12">
+                            <div className="flex items-center gap-3 mb-6 border-b border-gray-200 pb-3">
+                                <Home className="w-5 h-5 text-[#9f224e]" />
+                                <h2 className="text-xl font-black text-gray-900 uppercase font-serif tracking-tight">Nước chủ nhà</h2>
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {ALL_TEAMS.filter(t => ['México', 'Hoa Kỳ', 'Canada'].includes(t.name)).map(team => 
+                                    <TeamCard key={team.id} team={team} onClick={onTeamClick} />
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Render Regions */}
+                    {selectedRegion === 'ALL' ? (
+                        REGIONS.filter(r => r.code !== 'ALL').map(region => renderRegionSection(region.code, region.name))
+                    ) : (
+                        renderRegionSection(selectedRegion, REGIONS.find(r => r.code === selectedRegion)?.name || '')
+                    )}
                 </div>
 
-                {/* --- RIGHT COLUMN: SIDEBAR (300px) --- */}
+                {/* Sidebar Column: 300px */}
                 <aside className="w-full flex flex-col gap-6">
                     <MatchScheduleBox />
-                    <StandingsWidget />
+                    <StandingsWidget onTeamClick={onTeamClick} />
                     <PollWidget />
                 </aside>
            </div>

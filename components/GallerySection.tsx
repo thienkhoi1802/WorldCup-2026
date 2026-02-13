@@ -5,13 +5,13 @@ import { Image as ImageIcon, Camera } from 'lucide-react';
 const GallerySection: React.FC = () => {
   const images = Array.from({ length: 5 }).map((_, i) => ({
       id: i,
-      src: `https://picsum.photos/600/400?random=${i + 300}`,
+      src: `https://placehold.co/600x400/e2e8f0/94a3b8?text=PHOTO-${i+1}`,
       caption: `Khoảnh khắc ấn tượng từ SVĐ ${['Azteca', 'MetLife', 'SoFi', 'AT&T', 'BMO Field'][i]} trong ngày khai mạc`
   }));
 
   return (
     <div className="bg-[#111] py-8 mb-8">
-        <div className="max-w-[1140px] mx-auto px-4">
+        <div className="max-w-[1100px] mx-auto px-4">
             <div className="flex items-center justify-between mb-6">
                 <h2 className="text-white font-bold text-2xl font-serif uppercase flex items-center gap-3">
                     <span className="w-10 h-10 bg-[#9f224e] rounded-full flex items-center justify-center">

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="vi">
   <head>
@@ -5,16 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>World Cup 2026 News</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Helvetica Neue"', 'Helvetica', 'Arial', 'sans-serif'],
+              serif: ['"Helvetica Neue"', 'Helvetica', 'Arial', 'sans-serif'],
+            },
+          },
+        },
+      }
+    </script>
     <style>
       body {
-        font-family: 'Roboto', sans-serif;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
         background-color: #f0f2f5;
         background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
         background-size: 20px 20px;
       }
-      h1, h2, h3, h4, h5, h6, .font-serif {
-        font-family: 'Merriweather', serif;
+      /* Ensure headings also inherit or explicitly use Helvetica if not covered by Tailwind classes */
+      h1, h2, h3, h4, h5, h6 {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
       }
       /* Custom scrollbar for horizontal scrolling sections */
       .no-scrollbar::-webkit-scrollbar {
