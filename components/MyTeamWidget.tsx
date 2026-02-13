@@ -330,8 +330,8 @@ const MyTeamWidget: React.FC<MyTeamWidgetProps> = ({ onMatchClick, onTeamClick }
                     {/* LEFT: NEWS FEED (Fixed Layout - No Scroll) */}
                     <div className="flex-1 flex flex-col min-w-0 border-r border-gray-100 bg-white">
                         <div className="px-5 py-3 border-b border-gray-50 flex items-center justify-between bg-white shrink-0">
-                            <h4 className={`font-black text-xs uppercase flex items-center gap-2 tracking-widest ${accentColor}`}>
-                                <Newspaper className="w-3.5 h-3.5"/> Tin mới về {activeTeam.name}
+                            <h4 className={`font-black text-sm uppercase flex items-center gap-2 tracking-widest ${accentColor}`}>
+                                <Newspaper className="w-4 h-4"/> Tin mới về {activeTeam.name}
                             </h4>
                             <button 
                                 onClick={() => onTeamClick && onTeamClick(activeTeam)}
@@ -344,16 +344,16 @@ const MyTeamWidget: React.FC<MyTeamWidgetProps> = ({ onMatchClick, onTeamClick }
                         {/* Grid 4 Items */}
                         <div className="flex-1 p-0 flex flex-col">
                             {relatedNews.slice(0, 4).map((news, idx) => (
-                                <div key={news.id} className="flex-1 flex gap-4 px-5 items-center hover:bg-gray-50 cursor-pointer group transition-colors border-b border-gray-50 last:border-0 overflow-hidden">
-                                    <div className="w-28 h-16 shrink-0 overflow-hidden rounded bg-gray-100 relative shadow-sm">
+                                <div key={news.id} className="flex-1 flex gap-5 px-5 items-center hover:bg-gray-50 cursor-pointer group transition-colors border-b border-gray-50 last:border-0 overflow-hidden">
+                                    <div className="w-32 h-16 shrink-0 overflow-hidden rounded bg-gray-100 relative shadow-sm">
                                         <img src={news.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                                         {idx === 0 && <span className="absolute top-1 left-1 bg-red-600 w-1.5 h-1.5 rounded-full animate-pulse ring-2 ring-white"></span>}
                                     </div>
-                                    <div className="flex flex-col justify-center min-w-0 flex-1">
-                                        <h5 className="text-[13px] md:text-[14px] font-bold text-gray-900 leading-tight line-clamp-2 group-hover:text-[#9f224e] transition-colors mb-1.5">
+                                    <div className="flex flex-col justify-center min-w-0 flex-1 gap-1">
+                                        <h5 className="text-[16px] md:text-[18px] font-bold text-gray-900 leading-snug line-clamp-2 group-hover:text-[#9f224e] transition-colors">
                                             {news.title}
                                         </h5>
-                                        <div className="flex items-center gap-2 text-[10px] text-gray-400 font-medium">
+                                        <div className="flex items-center gap-2 text-[11px] text-gray-400 font-medium">
                                             <span className="truncate">{news.time}</span>
                                             <span className="w-0.5 h-2 bg-gray-300"></span>
                                             <span className="uppercase tracking-wide text-gray-500">{news.category}</span>
