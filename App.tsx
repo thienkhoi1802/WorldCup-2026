@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import QuickAccess from './components/QuickAccess';
 import NewsFeed from './components/NewsFeed';
@@ -33,6 +33,18 @@ const App: React.FC = () => {
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [currentView, setCurrentView] = useState<ViewType>('home');
+
+  // Handle Global Keyboard Shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+            e.preventDefault();
+            setIsSearchOpen(true);
+        }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const handleOpenMatch = (match: Match) => {
     setSelectedMatch(match);

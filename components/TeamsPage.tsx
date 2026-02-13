@@ -102,55 +102,84 @@ const TeamsPage: React.FC<TeamsPageProps> = ({ onTeamClick }) => {
                 {/* --- LEFT COLUMN: MAIN CONTENT (760px) --- */}
                 <div className="min-w-0">
                     
-                    {/* Header & Controls */}
-                    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-                        <h1 className="text-3xl text-gray-900 font-serif font-bold mb-6">Đội tuyển</h1>
-                        
-                        <div className="flex flex-col gap-6">
-                            {/* Search and Sort */}
-                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                                <div className="relative w-full sm:w-72">
+                    {/* Header & Controls - Optimized Layout */}
+                    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 mb-6">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                            <h1 className="text-2xl text-gray-900 font-serif font-black uppercase tracking-tight shrink-0">Đội tuyển</h1>
+                            
+                            <div className="flex flex-1 items-center gap-4 w-full md:w-auto">
+                                {/* Search */}
+                                <div className="relative flex-1 max-w-md ml-auto">
                                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                                     <input 
                                         type="text" 
-                                        placeholder="Tìm kiếm..." 
+                                        placeholder="Tìm kiếm đội tuyển..." 
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all shadow-sm"
+                                        className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-full text-sm focus:outline-none focus:border-[#9f224e] focus:ring-1 focus:ring-[#9f224e] transition-all placeholder:text-gray-400"
                                     />
                                 </div>
-
-                                <div className="flex items-center gap-3">
-                                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider hidden sm:block">Sắp xếp:</span>
-                                    <div className="flex items-center gap-1 bg-gray-50 p-1 rounded-lg border border-gray-200">
+                                
+                                {/* Sort (Desktop) */}
+                                <div className="hidden md:flex items-center gap-2 shrink-0">
+                                    <span className="text-xs font-bold text-gray-400 uppercase mr-1">Sắp xếp:</span>
+                                    <div className="flex bg-gray-100 rounded-lg p-1">
                                         <button 
                                             onClick={() => setSortBy('name')}
-                                            className={`px-3 py-1.5 text-xs font-bold rounded transition-colors ${sortBy === 'name' ? 'bg-white shadow-sm text-black' : 'text-gray-500 hover:text-black'}`}
+                                            className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all ${sortBy === 'name' ? 'bg-white text-black shadow-sm' : 'text-gray-500 hover:text-gray-900'}`}
                                         >
                                             A-Z
                                         </button>
                                         <button 
                                             onClick={() => setSortBy('rank')}
-                                            className={`px-3 py-1.5 text-xs font-bold rounded transition-colors ${sortBy === 'rank' ? 'bg-white shadow-sm text-black' : 'text-gray-500 hover:text-black'}`}
+                                            className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all ${sortBy === 'rank' ? 'bg-white text-black shadow-sm' : 'text-gray-500 hover:text-gray-900'}`}
                                         >
                                             Hạng FIFA
                                         </button>
                                     </div>
                                 </div>
                             </div>
-
-                            {/* Region Filter */}
-                            <div className="flex flex-wrap items-center gap-2 border-t border-gray-100 pt-4">
-                                {REGIONS.map((region) => (
+                        </div>
+                        
+                        {/* Filters & Mobile Sort */}
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 border-t border-gray-100 pt-4">
+                             <div className="flex items-center gap-2 overflow-x-auto no-scrollbar w-full pb-1 sm:pb-0">
+                                <button
+                                    onClick={() => setSelectedRegion('ALL')}
+                                    className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors border ${selectedRegion === 'ALL' ? 'bg-black border-black text-white' : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300'}`}
+                                >
+                                    Tất cả
+                                </button>
+                                <div className="w-px h-5 bg-gray-300 mx-1 shrink-0 hidden sm:block"></div>
+                                {REGIONS.filter(r => r.code !== 'ALL').map((region) => (
                                     <button
                                         key={region.code}
                                         onClick={() => setSelectedRegion(region.code)}
-                                        className={`text-xs font-bold px-3 py-1.5 rounded-full transition-colors border ${selectedRegion === region.code ? 'bg-black text-white border-black' : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300'}`}
+                                        className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors border ${selectedRegion === region.code ? 'bg-black border-black text-white' : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300'}`}
                                     >
                                         {region.name}
                                     </button>
                                 ))}
                             </div>
+                             
+                             {/* Mobile Sort */}
+                             <div className="md:hidden flex items-center gap-2 shrink-0 ml-auto w-full justify-end border-t border-gray-50 sm:border-0 pt-3 sm:pt-0">
+                                    <span className="text-[10px] font-bold text-gray-400 uppercase">Xếp theo:</span>
+                                    <div className="flex bg-gray-100 rounded-lg p-1">
+                                        <button 
+                                            onClick={() => setSortBy('name')}
+                                            className={`px-3 py-1 text-[10px] font-bold rounded-md transition-all ${sortBy === 'name' ? 'bg-white text-black shadow-sm' : 'text-gray-500'}`}
+                                        >
+                                            A-Z
+                                        </button>
+                                        <button 
+                                            onClick={() => setSortBy('rank')}
+                                            className={`px-3 py-1 text-[10px] font-bold rounded-md transition-all ${sortBy === 'rank' ? 'bg-white text-black shadow-sm' : 'text-gray-500'}`}
+                                        >
+                                            Hạng
+                                        </button>
+                                    </div>
+                             </div>
                         </div>
                     </div>
 

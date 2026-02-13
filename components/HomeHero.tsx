@@ -16,10 +16,10 @@ const HomeHero: React.FC<HomeHeroProps> = ({ newsItems }) => {
   if (!mainNews) return null;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-12 gap-1 md:h-[500px] mb-8 font-serif">
+    <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:h-[500px] mb-8 font-serif">
       
       {/* 1. LEFT MAIN STORY (Col Span 8) */}
-      <div className="md:col-span-8 relative group cursor-pointer overflow-hidden h-[400px] md:h-full rounded-tl-sm rounded-bl-sm">
+      <div className="md:col-span-8 relative group cursor-pointer overflow-hidden h-[400px] md:h-full rounded-2xl shadow-sm hover:shadow-md transition-shadow">
         {/* Image with zoom effect */}
         <img 
             src={mainNews.image} 
@@ -40,7 +40,7 @@ const HomeHero: React.FC<HomeHeroProps> = ({ newsItems }) => {
             </p>
             
             <div className="flex items-center gap-4 text-[10px] md:text-[11px] font-bold font-sans tracking-wider">
-                <span className="bg-[#9f224e] text-white px-2.5 py-1 rounded-sm uppercase">
+                <span className="bg-[#9f224e] text-white px-3 py-1.5 rounded-full uppercase shadow-sm">
                     {mainNews.category || 'Tiêu điểm'}
                 </span>
                 <span className="flex items-center gap-1.5 text-gray-300">
@@ -51,19 +51,19 @@ const HomeHero: React.FC<HomeHeroProps> = ({ newsItems }) => {
       </div>
 
       {/* 2. RIGHT SUB STORIES (Col Span 4) */}
-      <div className="md:col-span-4 flex flex-col gap-1 h-full">
+      <div className="md:col-span-4 flex flex-col gap-4 h-full">
          
          {/* Sub Story 1 */}
          {subNews1 && (
-             <div className="flex-1 relative group cursor-pointer overflow-hidden h-[200px] md:h-auto rounded-tr-sm">
+             <div className="flex-1 relative group cursor-pointer overflow-hidden h-[200px] md:h-auto rounded-2xl shadow-sm hover:shadow-md transition-shadow">
                  <img 
                     src={subNews1.image} 
                     alt={subNews1.title}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
                  />
                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
-                 <div className="absolute bottom-0 left-0 p-5 w-full z-10">
-                    <span className="inline-block bg-white text-[#9f224e] text-[10px] font-bold uppercase px-2 py-0.5 rounded-sm mb-2 font-sans tracking-wide">
+                 <div className="absolute bottom-0 left-0 p-6 w-full z-10">
+                    <span className="inline-block bg-white text-[#9f224e] text-[10px] font-bold uppercase px-2.5 py-1 rounded-full mb-2 font-sans tracking-wide shadow-sm">
                         {subNews1.category || 'Tin nóng'}
                     </span>
                     <h3 className="text-white font-bold text-lg md:text-xl leading-snug drop-shadow-sm group-hover:text-gray-200 transition-colors line-clamp-3">
@@ -75,15 +75,15 @@ const HomeHero: React.FC<HomeHeroProps> = ({ newsItems }) => {
          
          {/* Sub Story 2 */}
          {subNews2 && (
-             <div className="flex-1 relative group cursor-pointer overflow-hidden h-[200px] md:h-auto rounded-br-sm">
+             <div className="flex-1 relative group cursor-pointer overflow-hidden h-[200px] md:h-auto rounded-2xl shadow-sm hover:shadow-md transition-shadow">
                  <img 
                     src={subNews2.image} 
                     alt={subNews2.title}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
                  />
                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
-                 <div className="absolute bottom-0 left-0 p-5 w-full z-10">
-                    <span className="inline-block bg-white text-[#9f224e] text-[10px] font-bold uppercase px-2 py-0.5 rounded-sm mb-2 font-sans tracking-wide">
+                 <div className="absolute bottom-0 left-0 p-6 w-full z-10">
+                    <span className="inline-block bg-white text-[#9f224e] text-[10px] font-bold uppercase px-2.5 py-1 rounded-full mb-2 font-sans tracking-wide shadow-sm">
                         {subNews2.category || 'Hậu trường'}
                     </span>
                     <h3 className="text-white font-bold text-lg md:text-xl leading-snug drop-shadow-sm group-hover:text-gray-200 transition-colors line-clamp-3">

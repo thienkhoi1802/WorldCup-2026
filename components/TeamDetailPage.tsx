@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Team, Match, NewsItem } from '../types';
 import { UPCOMING_MATCHES, NEWS_DATA } from '../constants';
-import { ChevronLeft, Calendar, User, Shield, Zap, TrendingUp, Users } from 'lucide-react';
+import { ChevronLeft, Calendar, User, Shield, Zap, TrendingUp, Users, Clock, ArrowRight, FileText } from 'lucide-react';
 import MatchScheduleBox from './MatchScheduleBox';
 import StandingsWidget from './StandingsWidget';
 import PollWidget from './PollWidget';
@@ -48,6 +48,19 @@ const TeamDetailPage: React.FC<TeamDetailPageProps> = ({ team, onBack, onMatchCl
   const teamMatches = UPCOMING_MATCHES.filter(m => m.homeTeam === team.name || m.awayTeam === team.name);
   const teamNews = NEWS_DATA.filter(n => n.title.toLowerCase().includes(team.name.toLowerCase()));
   const squad = getMockSquad(team.id);
+
+  // Generate 20 specific mock news items for this team
+  const EXTENDED_TEAM_NEWS = Array.from({ length: 20 }).map((_, i) => ({
+      id: `team-extended-${i}`,
+      title: i % 3 === 0 
+        ? `Phỏng vấn độc quyền: HLV ${team.name} tiết lộ chiến thuật cho trận đấu tới` 
+        : i % 3 === 1 
+        ? `Ngôi sao ${team.name} gặp chấn thương nhẹ trong buổi tập chiều qua`
+        : `Người hâm mộ ${team.name} xếp hàng dài mua vé xem World Cup`,
+      image: `https://picsum.photos/300/200?random=${team.id.charCodeAt(0) + i}`,
+      time: `${Math.floor(Math.random() * 48) + 1} giờ trước`,
+      category: ['Tin nóng', 'Hậu trường', 'Chuyên môn', 'Chuyển nhượng'][i % 4]
+  }));
 
   return (
     <div className="bg-[#f0f2f5] min-h-screen font-sans pb-12">
@@ -159,6 +172,62 @@ const TeamDetailPage: React.FC<TeamDetailPageProps> = ({ team, onBack, onMatchCl
                                             ))}
                                         </div>
                                         <p className="text-xs text-gray-600 font-medium">Thắng 3, Hòa 1, Thua 1 trong 5 trận gần nhất.</p>
+                                    </div>
+                                </div>
+
+                                {/* EXTENDED NEWS SECTION (Modified to Single Column) */}
+                                <div className="pt-4 border-t border-gray-100">
+                                    <div className="flex items-center justify-between mb-6">
+                                        <h3 className="text-lg font-black uppercase text-gray-900 font-serif flex items-center gap-2">
+                                            <FileText className="w-5 h-5 text-[#9f224e]" /> 
+                                            Tin tức về {team.name}
+                                        </h3>
+                                        <button 
+                                            onClick={() => setActiveTab('news')}
+                                            className="text-xs font-bold text-gray-500 hover:text-[#9f224e] flex items-center gap-1 bg-gray-50 px-3 py-1.5 rounded-full transition-colors"
+                                        >
+                                            Xem tất cả <ArrowRight className="w-3 h-3" />
+                                        </button>
+                                    </div>
+
+                                    {/* Single Column List Layout */}
+                                    <div className="flex flex-col gap-5">
+                                        {EXTENDED_TEAM_NEWS.map((news) => (
+                                            <article 
+                                                key={news.id} 
+                                                className="flex gap-4 group cursor-pointer border-b border-gray-100 pb-5 last:border-0 last:pb-0"
+                                            >
+                                                <div className="w-32 h-20 shrink-0 overflow-hidden rounded border border-gray-100 bg-gray-100">
+                                                    <img 
+                                                        src={news.image} 
+                                                        alt="Thumbnail" 
+                                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                                    />
+                                                </div>
+                                                <div className="flex flex-col justify-between py-0.5">
+                                                    <h4 className="text-base font-bold text-gray-900 leading-tight group-hover:text-[#9f224e] transition-colors line-clamp-2">
+                                                        {news.title}
+                                                    </h4>
+                                                    <div className="flex items-center gap-3 mt-1">
+                                                        <span className="text-[10px] font-bold text-gray-500 bg-gray-50 px-2 py-0.5 rounded uppercase border border-gray-200">
+                                                            {news.category}
+                                                        </span>
+                                                        <span className="text-xs text-gray-400 flex items-center gap-1">
+                                                            <Clock className="w-3 h-3" /> {news.time}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </article>
+                                        ))}
+                                    </div>
+                                    
+                                    <div className="mt-8 text-center">
+                                        <button 
+                                            onClick={() => setActiveTab('news')}
+                                            className="px-6 py-2.5 bg-white border border-gray-200 text-gray-600 font-bold text-sm rounded-full hover:border-[#9f224e] hover:text-[#9f224e] transition-colors shadow-sm"
+                                        >
+                                            Xem thêm tin tức khác
+                                        </button>
                                     </div>
                                 </div>
                             </div>

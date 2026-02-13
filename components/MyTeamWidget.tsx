@@ -68,14 +68,23 @@ const MyTeamWidget: React.FC<MyTeamWidgetProps> = ({ onMatchClick }) => {
 
   const removeActiveTeam = () => {
     if (!activeTeamId) return;
+    
+    // Prevent removing the last team
+    if (myTeams.length <= 1) {
+        alert("Bạn cần theo dõi ít nhất một đội tuyển.");
+        return;
+    }
+
     const newTeams = myTeams.filter(t => t.id !== activeTeamId);
     saveTeams(newTeams);
     
     if (newTeams.length > 0) {
         setActiveTeamId(newTeams[0].id);
     } else {
+        // This block should ideally not be reached if the check above works, 
+        // but kept for safety if logic changes.
         setActiveTeamId(null);
-        setIsAddingMode(false); // Will revert to initial empty state
+        setIsAddingMode(false); 
     }
   };
 
@@ -242,7 +251,13 @@ const MyTeamWidget: React.FC<MyTeamWidgetProps> = ({ onMatchClick }) => {
                 </div>
                 <button 
                     onClick={removeActiveTeam}
-                    className="text-xs text-gray-400 hover:text-red-600 flex items-center gap-1 transition-colors px-2 py-1 rounded hover:bg-red-50"
+                    disabled={myTeams.length <= 1}
+                    title={myTeams.length <= 1 ? "Không thể xóa đội cuối cùng" : "Bỏ theo dõi đội tuyển này"}
+                    className={`text-xs flex items-center gap-1 transition-colors px-2 py-1 rounded ${
+                        myTeams.length <= 1 
+                        ? 'text-gray-300 cursor-not-allowed' 
+                        : 'text-gray-400 hover:text-red-600 hover:bg-red-50'
+                    }`}
                 >
                     <Trash2 className="w-3.5 h-3.5" /> Bỏ theo dõi
                 </button>
