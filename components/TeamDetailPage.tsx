@@ -1,8 +1,8 @@
 
 import React, { useState } from 'react';
 import { Team, Match, NewsItem } from '../types';
-import { UPCOMING_MATCHES, NEWS_DATA } from '../constants';
-import { ChevronLeft, Calendar, MapPin, Clock, Shirt, User, ChevronRight, Shield, Zap, Target, AlignLeft } from 'lucide-react';
+import { UPCOMING_MATCHES, NEWS_DATA, WC_GROUPS_MOCK } from '../constants';
+import { ChevronLeft, Calendar, MapPin, Clock, Shirt, User, ChevronRight, Shield, Zap, Target, AlignLeft, Globe, Trophy, Hash, Users } from 'lucide-react';
 import MatchScheduleBox from './MatchScheduleBox';
 import StandingsWidget from './StandingsWidget';
 import PollWidget from './PollWidget';
@@ -24,8 +24,39 @@ const generateSquad = (teamName: string) => {
     };
 };
 
-// Reusable Component: Match Item
-const MatchItem: React.FC<{ match: Match; teamName: string; onClick: (match: Match) => void }> = ({ match, teamName, onClick }) => (
+// Helper to find group
+const findTeamGroup = (teamName: string) => {
+    for (const [group, teams] of Object.entries(WC_GROUPS_MOCK)) {
+        if (teams.some(t => t.team === teamName)) return group;
+    }
+    return null;
+};
+
+// Reusable Component: News List Item (Expanded for Single Column)
+const NewsListItem: React.FC<{ item: NewsItem }> = ({ item }) => (
+    <div className="flex gap-4 sm:gap-6 group cursor-pointer border-b border-gray-100 py-5 last:border-0 hover:bg-gray-50/50 transition-colors">
+        <div className="w-32 h-20 sm:w-48 sm:h-28 shrink-0 overflow-hidden rounded-lg bg-gray-100 relative">
+            <img src={item.image} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] font-bold uppercase text-gray-800 shadow-sm border border-white/20">
+                {item.category}
+            </div>
+        </div>
+        <div className="flex-1 min-w-0 flex flex-col justify-start gap-2">
+            <h4 className="text-base sm:text-lg font-bold text-gray-900 leading-snug line-clamp-2 group-hover:text-[#9f224e] transition-colors">
+                {item.title}
+            </h4>
+            <p className="text-sm text-gray-500 line-clamp-2 hidden sm:block leading-relaxed">{item.excerpt}</p>
+            <div className="flex items-center gap-3 text-[11px] text-gray-400 mt-auto">
+                <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {item.time}</span>
+                <span className="w-1 h-1 rounded-full bg-gray-300"></span>
+                <span className="text-gray-400">Tác giả: Ban Thể Thao</span>
+            </div>
+        </div>
+    </div>
+);
+
+// Reusable Component: Match Item for Fixtures Tab (Simple version)
+const FixtureItem: React.FC<{ match: Match; teamName: string; onClick: (match: Match) => void }> = ({ match, teamName, onClick }) => (
     <div 
         onClick={() => onClick(match)}
         className="bg-white border border-gray-200 rounded-lg p-4 hover:border-[#9f224e] hover:shadow-md cursor-pointer transition-all flex flex-col sm:flex-row items-center justify-between gap-4"
@@ -53,29 +84,6 @@ const MatchItem: React.FC<{ match: Match; teamName: string; onClick: (match: Mat
     </div>
 );
 
-// Reusable Component: News List Item (Expanded for Single Column)
-const NewsListItem: React.FC<{ item: NewsItem }> = ({ item }) => (
-    <div className="flex gap-4 sm:gap-6 group cursor-pointer border-b border-gray-100 py-5 last:border-0 hover:bg-gray-50/50 transition-colors">
-        <div className="w-32 h-20 sm:w-48 sm:h-28 shrink-0 overflow-hidden rounded-lg bg-gray-100 relative">
-            <img src={item.image} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-            <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] font-bold uppercase text-gray-800 shadow-sm border border-white/20">
-                {item.category}
-            </div>
-        </div>
-        <div className="flex-1 min-w-0 flex flex-col justify-start gap-2">
-            <h4 className="text-base sm:text-lg font-bold text-gray-900 leading-snug line-clamp-2 group-hover:text-[#9f224e] transition-colors">
-                {item.title}
-            </h4>
-            <p className="text-sm text-gray-500 line-clamp-2 hidden sm:block leading-relaxed">{item.excerpt}</p>
-            <div className="flex items-center gap-3 text-[11px] text-gray-400 mt-auto">
-                <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {item.time}</span>
-                <span className="w-1 h-1 rounded-full bg-gray-300"></span>
-                <span className="text-gray-400">Tác giả: Ban Thể Thao</span>
-            </div>
-        </div>
-    </div>
-);
-
 const TeamDetailPage: React.FC<TeamDetailPageProps> = ({ team, onBack, onMatchClick, onTeamClick }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'squad' | 'fixtures' | 'news'>('overview');
   
@@ -91,6 +99,16 @@ const TeamDetailPage: React.FC<TeamDetailPageProps> = ({ team, onBack, onMatchCl
   const overviewNews = rawTeamNews.slice(0, 20);
   const fullNews = rawTeamNews.slice(0, 30);
   const squad = generateSquad(team.name);
+  
+  // Rich Data Calculation
+  const groupName = findTeamGroup(team.name);
+  const participationCount = team.participations || Math.floor(Math.random() * 10) + 2;
+
+  // Determine text color based on background
+  const hasBlackText = team.displayColor?.includes('text-black');
+  const textColorClass = hasBlackText ? 'text-gray-900' : 'text-white';
+  const subTextColorClass = hasBlackText ? 'text-gray-700' : 'text-white/80';
+  const pillBgClass = hasBlackText ? 'bg-black/5 border-black/10' : 'bg-white/10 border-white/20';
 
   return (
     <div className="bg-[#f0f2f5] min-h-screen font-sans pb-12">
@@ -100,32 +118,58 @@ const TeamDetailPage: React.FC<TeamDetailPageProps> = ({ team, onBack, onMatchCl
                 {/* Main Content */}
                 <div className="min-w-0 bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
                     
-                    {/* Hero Header */}
-                    <div className={`${team.displayColor || 'bg-gray-900'} relative h-48 sm:h-56 p-6 flex flex-col justify-between overflow-hidden`}>
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+                    {/* RICH HERO HEADER */}
+                    <div className={`${team.displayColor || 'bg-gray-900'} relative p-6 sm:p-8 flex flex-col gap-6 overflow-hidden`}>
+                        {/* Background Decor */}
+                        <div className="absolute top-0 right-0 w-80 h-80 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none mix-blend-overlay"></div>
+                        <div className="absolute bottom-0 left-0 w-40 h-40 bg-black/10 rounded-full blur-2xl -ml-10 -mb-10 pointer-events-none"></div>
 
-                        <button onClick={onBack} className="self-start flex items-center gap-1 text-white/80 hover:text-white transition-all text-xs font-bold uppercase bg-black/20 px-3 py-1.5 rounded-full backdrop-blur-sm relative z-10">
-                            <ChevronLeft className="w-4 h-4" /> Quay lại danh sách
-                        </button>
+                        {/* Top Action Row */}
+                        <div className="flex justify-between items-start relative z-10">
+                            <button onClick={onBack} className={`flex items-center gap-1 ${subTextColorClass} hover:${textColorClass} transition-all text-xs font-bold uppercase ${pillBgClass} px-3 py-1.5 rounded-full backdrop-blur-sm`}>
+                                <ChevronLeft className="w-4 h-4" /> Quay lại
+                            </button>
+                        </div>
                         
-                        <div className="flex items-end gap-5 relative z-10">
-                            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white p-1 rounded-lg shadow-xl">
-                                <img src={team.flag} alt={team.name} className="w-full h-full object-cover rounded-[2px]" />
+                        {/* Main Info Row */}
+                        <div className="flex flex-col sm:flex-row items-start sm:items-end gap-6 relative z-10">
+                            {/* Flag */}
+                            <div className="w-24 h-24 sm:w-28 sm:h-28 bg-white p-1 rounded-xl shadow-xl shrink-0 rotate-1 transform transition-transform hover:rotate-0">
+                                <img src={team.flag} alt={team.name} className="w-full h-full object-cover rounded-lg" />
                             </div>
-                            <div className="mb-1">
-                                <div className="flex items-center gap-2 mb-1">
-                                     <span className="bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded backdrop-blur-md uppercase tracking-wider">
-                                        {team.region}
-                                     </span>
-                                     {team.isQualified && (
-                                         <span className="bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
-                                            Đã có vé
-                                         </span>
-                                     )}
-                                </div>
-                                <h1 className="text-3xl sm:text-5xl font-black text-white font-serif tracking-tight leading-none">
+
+                            {/* Text Info */}
+                            <div className="flex-1 min-w-0">
+                                <h1 className={`text-4xl sm:text-5xl font-black ${textColorClass} font-serif tracking-tight leading-none mb-4`}>
                                     {team.name}
                                 </h1>
+                                
+                                {/* Stats Grid - Improved UX */}
+                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                    {/* Ranking */}
+                                    <div className={`flex flex-col p-2 rounded-lg ${pillBgClass} backdrop-blur-md`}>
+                                        <span className={`text-[10px] uppercase font-bold ${subTextColorClass} mb-0.5 flex items-center gap-1`}><Hash className="w-3 h-3"/> BXH FIFA</span>
+                                        <span className={`text-lg font-black ${textColorClass}`}>{team.ranking ? `#${team.ranking}` : '--'}</span>
+                                    </div>
+                                    
+                                    {/* Group */}
+                                    <div className={`flex flex-col p-2 rounded-lg ${pillBgClass} backdrop-blur-md`}>
+                                        <span className={`text-[10px] uppercase font-bold ${subTextColorClass} mb-0.5 flex items-center gap-1`}><Shield className="w-3 h-3"/> Bảng đấu</span>
+                                        <span className={`text-lg font-black ${textColorClass}`}>{groupName ? `Bảng ${groupName}` : 'Chưa xếp'}</span>
+                                    </div>
+
+                                    {/* Region */}
+                                    <div className={`flex flex-col p-2 rounded-lg ${pillBgClass} backdrop-blur-md`}>
+                                        <span className={`text-[10px] uppercase font-bold ${subTextColorClass} mb-0.5 flex items-center gap-1`}><Globe className="w-3 h-3"/> Khu vực</span>
+                                        <span className={`text-lg font-black ${textColorClass}`}>{team.region}</span>
+                                    </div>
+
+                                     {/* Coach/Info */}
+                                     <div className={`flex flex-col p-2 rounded-lg ${pillBgClass} backdrop-blur-md`}>
+                                        <span className={`text-[10px] uppercase font-bold ${subTextColorClass} mb-0.5 flex items-center gap-1`}><Users className="w-3 h-3"/> Tham dự</span>
+                                        <span className={`text-lg font-black ${textColorClass}`}>{participationCount} lần</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -159,113 +203,62 @@ const TeamDetailPage: React.FC<TeamDetailPageProps> = ({ team, onBack, onMatchCl
                         {activeTab === 'overview' && (
                             <div className="space-y-10 animate-in fade-in duration-300">
                                 
-                                {/* Section 1: Upcoming Matches */}
+                                {/* Section 1: Upcoming Matches (Updated UI) */}
                                 <section>
                                     <div className="flex items-center justify-between mb-4">
                                         <h3 className="font-black text-lg text-gray-900 uppercase font-serif flex items-center gap-2">
                                             <Calendar className="w-5 h-5 text-[#9f224e]" /> Lịch thi đấu gần nhất
                                         </h3>
-                                        <button onClick={() => setActiveTab('fixtures')} className="text-xs font-bold text-gray-500 hover:text-[#9f224e] flex items-center gap-1">
+                                        <button onClick={() => setActiveTab('fixtures')} className="text-xs font-bold text-gray-500 hover:text-[#9f224e] flex items-center gap-1 transition-colors">
                                             Xem tất cả <ChevronRight className="w-3 h-3" />
                                         </button>
                                     </div>
-                                    <div className="space-y-3">
+                                    <div className="space-y-4">
                                         {teamMatches.length > 0 ? (
-                                            teamMatches.slice(0, 3).map(m => <MatchItem key={m.id} match={m} teamName={team.name} onClick={onMatchClick} />)
+                                            teamMatches.slice(0, 3).map(m => (
+                                                <div 
+                                                    key={m.id}
+                                                    onClick={() => onMatchClick(m)}
+                                                    className="flex flex-col md:flex-row items-center border border-gray-200 rounded-lg overflow-hidden hover:border-[#9f224e] hover:shadow-md cursor-pointer transition-all group bg-white"
+                                                >
+                                                    {/* Date Time Block */}
+                                                    <div className="w-full md:w-48 bg-gray-100/80 p-4 flex flex-row md:flex-col items-center justify-between md:justify-center gap-1 text-gray-700 border-b md:border-b-0 md:border-r border-gray-100 shrink-0">
+                                                        <span className="text-xs font-bold text-gray-500">{m.date}</span>
+                                                        <span className="text-xl font-black text-gray-900">{m.time}</span>
+                                                    </div>
+
+                                                    {/* Match Info */}
+                                                    <div className="flex-1 p-4 w-full">
+                                                        <div className="flex items-center justify-center gap-4 md:gap-8">
+                                                            {/* Home */}
+                                                            <div className="flex items-center gap-3 flex-1 justify-end">
+                                                                <span className={`font-bold text-sm md:text-base ${m.homeTeam === team.name ? 'text-black' : 'text-gray-600'}`}>{m.homeTeam}</span>
+                                                                <img src={m.homeFlag} className="w-8 h-6 object-cover rounded shadow-sm" alt="" />
+                                                            </div>
+                                                            
+                                                            {/* VS */}
+                                                            <span className="font-black text-gray-300 text-lg italic">VS</span>
+
+                                                            {/* Away */}
+                                                            <div className="flex items-center gap-3 flex-1 justify-start">
+                                                                <img src={m.awayFlag} className="w-8 h-6 object-cover rounded shadow-sm" alt="" />
+                                                                <span className={`font-bold text-sm md:text-base ${m.awayTeam === team.name ? 'text-black' : 'text-gray-600'}`}>{m.awayTeam}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Stadium (Right side) */}
+                                                    <div className="w-full md:w-40 px-4 py-3 md:py-0 flex items-center justify-center md:justify-end text-xs text-gray-400 border-t md:border-t-0 md:border-l border-gray-50 bg-gray-50/30 h-full">
+                                                        <MapPin className="w-3.5 h-3.5 mr-1" />
+                                                        <span className="truncate">{m.stadium?.split(' ')[0]}</span>
+                                                    </div>
+                                                </div>
+                                            ))
                                         ) : (
-                                            <div className="p-6 bg-gray-50 rounded-lg text-center text-gray-500 text-sm italic">
+                                            <div className="p-8 text-center text-gray-400 italic bg-gray-50 rounded-lg">
                                                 Chưa có lịch thi đấu sắp tới.
                                             </div>
                                         )}
-                                    </div>
-                                </section>
-
-                                {/* Section 2: Styled Squad Overview */}
-                                <section>
-                                    <div className="flex items-center justify-between mb-4">
-                                        <h3 className="font-black text-lg text-gray-900 uppercase font-serif flex items-center gap-2">
-                                            <Shirt className="w-5 h-5 text-[#9f224e]" /> Đội hình chủ chốt
-                                        </h3>
-                                        <button onClick={() => setActiveTab('squad')} className="text-xs font-bold text-gray-500 hover:text-[#9f224e] flex items-center gap-1">
-                                            Chi tiết <ChevronRight className="w-3 h-3" />
-                                        </button>
-                                    </div>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                                        {/* GK */}
-                                        <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm relative overflow-hidden group hover:border-yellow-400 hover:shadow-md transition-all">
-                                            <div className="absolute top-0 left-0 w-1 h-full bg-yellow-400"></div>
-                                            <div className="flex items-center gap-2 mb-3 pl-2">
-                                                <div className="w-8 h-8 rounded-full bg-yellow-50 flex items-center justify-center">
-                                                    <Shield className="w-4 h-4 text-yellow-600" />
-                                                </div>
-                                                <h4 className="text-xs font-black uppercase text-gray-700">Thủ môn</h4>
-                                            </div>
-                                            <ul className="pl-2 space-y-2">
-                                                {squad.gk.slice(0, 3).map((p, i) => (
-                                                    <li key={i} className="flex items-center gap-2 text-sm font-bold text-gray-900">
-                                                        <span className="w-5 h-5 rounded-full bg-gray-100 text-[10px] font-bold text-gray-500 flex items-center justify-center font-mono">1</span>
-                                                        <span className="truncate">{p}</span>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-
-                                        {/* DF */}
-                                        <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm relative overflow-hidden group hover:border-blue-400 hover:shadow-md transition-all">
-                                            <div className="absolute top-0 left-0 w-1 h-full bg-blue-400"></div>
-                                            <div className="flex items-center gap-2 mb-3 pl-2">
-                                                <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center">
-                                                    <Shield className="w-4 h-4 text-blue-600" />
-                                                </div>
-                                                <h4 className="text-xs font-black uppercase text-gray-700">Hậu vệ</h4>
-                                            </div>
-                                            <ul className="pl-2 space-y-2">
-                                                {squad.df.slice(0, 3).map((p, i) => (
-                                                    <li key={i} className="flex items-center gap-2 text-sm font-bold text-gray-900">
-                                                        <span className="w-5 h-5 rounded-full bg-gray-100 text-[10px] font-bold text-gray-500 flex items-center justify-center font-mono">{i + 2}</span>
-                                                        <span className="truncate">{p}</span>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-
-                                        {/* MF */}
-                                        <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm relative overflow-hidden group hover:border-green-400 hover:shadow-md transition-all">
-                                            <div className="absolute top-0 left-0 w-1 h-full bg-green-400"></div>
-                                            <div className="flex items-center gap-2 mb-3 pl-2">
-                                                 <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center">
-                                                    <AlignLeft className="w-4 h-4 text-green-600" />
-                                                </div>
-                                                <h4 className="text-xs font-black uppercase text-gray-700">Tiền vệ</h4>
-                                            </div>
-                                            <ul className="pl-2 space-y-2">
-                                                {squad.mf.slice(0, 3).map((p, i) => (
-                                                    <li key={i} className="flex items-center gap-2 text-sm font-bold text-gray-900">
-                                                        <span className="w-5 h-5 rounded-full bg-gray-100 text-[10px] font-bold text-gray-500 flex items-center justify-center font-mono">{i + 6}</span>
-                                                        <span className="truncate">{p}</span>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-
-                                        {/* FW */}
-                                        <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm relative overflow-hidden group hover:border-red-400 hover:shadow-md transition-all">
-                                            <div className="absolute top-0 left-0 w-1 h-full bg-red-400"></div>
-                                            <div className="flex items-center gap-2 mb-3 pl-2">
-                                                 <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center">
-                                                    <Target className="w-4 h-4 text-red-600" />
-                                                </div>
-                                                <h4 className="text-xs font-black uppercase text-gray-700">Tiền đạo</h4>
-                                            </div>
-                                            <ul className="pl-2 space-y-2">
-                                                {squad.fw.slice(0, 3).map((p, i) => (
-                                                    <li key={i} className="flex items-center gap-2 text-sm font-bold text-gray-900">
-                                                        <span className="w-5 h-5 rounded-full bg-gray-100 text-[10px] font-bold text-gray-500 flex items-center justify-center font-mono">{i + 9}</span>
-                                                        <span className="truncate">{p}</span>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
                                     </div>
                                 </section>
 
@@ -339,7 +332,7 @@ const TeamDetailPage: React.FC<TeamDetailPageProps> = ({ team, onBack, onMatchCl
                                 </h3>
                                 <div className="space-y-4">
                                     {teamMatches.length > 0 ? (
-                                        teamMatches.map(m => <MatchItem key={m.id} match={m} teamName={team.name} onClick={onMatchClick} />)
+                                        teamMatches.map(m => <FixtureItem key={m.id} match={m} teamName={team.name} onClick={onMatchClick} />)
                                     ) : (
                                         <div className="py-12 text-center text-gray-400 bg-gray-50 rounded-xl border border-dashed border-gray-200">
                                             <Calendar className="w-12 h-12 mx-auto mb-3 opacity-20" />
